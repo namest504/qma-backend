@@ -15,7 +15,9 @@ public enum ErrorCode {
     INVALID_API_PARAMETER(HttpStatus.BAD_REQUEST, "파라미터를 확인해주세요."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증에 실패하셨습니다."),
 
-    TEST(HttpStatus.I_AM_A_TEAPOT, "테스트 에러");
+    NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 정보입니다."),
+    JSON_PROCESSING(HttpStatus.BAD_REQUEST, "JSON 변환 중 에러가 발생했습니다."),
+    FAILED_OIDC_PUBLIC_KEY(HttpStatus.BAD_REQUEST, "OIDC 공개키 생성에 문제가 발생했습니다.");
 
     private final HttpStatus status;
     private final String message;
