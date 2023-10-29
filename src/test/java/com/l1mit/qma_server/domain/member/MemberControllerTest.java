@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.l1mit.qma_server.domain.member.dto.SignInRequest;
 import com.l1mit.qma_server.global.auth.AuthService;
+import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
 import com.l1mit.qma_server.global.config.SecurityConfig;
 import com.l1mit.qma_server.global.filter.JwtAuthenticationFilter;
 import com.l1mit.qma_server.global.jwt.dto.JwtResponse;
@@ -53,6 +54,9 @@ class MemberControllerTest {
             .accessToken("AccessToken")
             .refreshToken("RefreshToken")
             .build();
+    private final IdTokenResponse idTokenResponse = IdTokenResponse.builder()
+            .idToken("IdToken")
+            .build();
 
     @Test
     @WithMockUser
@@ -60,7 +64,7 @@ class MemberControllerTest {
     void signIn() throws Exception {
         //given
         String PROVIDER = "PROVIDER";
-        given(authService.signIn(PROVIDER, signInRequest)).willReturn(jwtResponse);
+        given(authService.signIn(PROVIDER, signInRequest)).willReturn(idTokenResponse);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api/v1/auth/" + PROVIDER + "/sign-in")
