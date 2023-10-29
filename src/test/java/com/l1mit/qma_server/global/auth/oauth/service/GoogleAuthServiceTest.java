@@ -6,7 +6,7 @@ import static org.mockito.Mockito.mock;
 
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
 import com.l1mit.qma_server.global.auth.oauth.key.PublicKeyGenerator;
-import com.l1mit.qma_server.global.infra.KakaoRequester;
+import com.l1mit.qma_server.global.infra.GoogleRequester;
 import com.l1mit.qma_server.global.jwt.JwtProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -21,11 +21,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class KakaoAuthServiceTest {
-
+class GoogleAuthServiceTest {
 
     @InjectMocks
-    private KakaoAuthService kakaoAuthService;
+    private GoogleAuthService googleAuthService;
 
     @Mock
     private JwtProvider jwtProvider;
@@ -34,7 +33,7 @@ class KakaoAuthServiceTest {
     private PublicKeyGenerator publicKeyGenerator;
 
     @Mock
-    private KakaoRequester kakaoRequester;
+    private GoogleRequester googleRequester;
 
     private final String code = "code";
     private final String redirectUri = "redirectUri";
@@ -42,14 +41,14 @@ class KakaoAuthServiceTest {
     private final IdTokenResponse idTokenResponse = new IdTokenResponse("id_token");
 
     @Test
-    @DisplayName("Kakao Open Id Token 발급에 성공한다.")
+    @DisplayName("Google Open Id Token 발급에 성공한다.")
     void getOpenIdToken() {
         //given
-        given(kakaoRequester.getOpenIdToken(code, redirectUri))
+        given(googleAuthService.getOpenIdToken(code, redirectUri))
                 .willReturn(idTokenResponse);
 
         //when
-        IdTokenResponse idTokenResponse = kakaoAuthService
+        IdTokenResponse idTokenResponse = googleAuthService
                 .getOpenIdToken(code, redirectUri);
 
         //then
@@ -57,7 +56,7 @@ class KakaoAuthServiceTest {
     }
 
     @Test
-    @DisplayName("Kakao Account Id를 불러오는데 성공한다.")
+    @DisplayName("Google Account Id를 불러오는데 성공한다.")
     void getAccountId() {
         //given
         String idToken = "IdToken";
@@ -68,15 +67,13 @@ class KakaoAuthServiceTest {
 
         given(jwtProvider.parseHeaders(idToken)).willReturn(headers);
         given(publicKeyGenerator.generatePublicKey(headers,
-                kakaoRequester.getPublicKeys())).willReturn(publicKey);
+                googleRequester.getPublicKeys())).willReturn(publicKey);
         given(jwtProvider.getTokenClaims(idToken, publicKey)).willReturn(claims);
 
         //when
-        String accountId = kakaoAuthService.getAccountId(idToken);
+        String accountId = googleAuthService.getAccountId(idToken);
 
         //then
         assertThat(accountId).isEqualTo("12345");
     }
-
-
 }

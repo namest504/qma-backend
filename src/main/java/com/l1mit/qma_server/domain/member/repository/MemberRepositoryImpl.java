@@ -39,4 +39,13 @@ public class MemberRepositoryImpl implements MemberRepository {
     public Member save(Member member) {
         return memberJpaRepository.save(member);
     }
+
+    @Override
+    public Optional<Member> findByAccountId(String accountId) {
+        QMember member = QMember.member;
+        return Optional.ofNullable(
+                jpaQueryFactory.selectFrom(member)
+                        .where(member.oauth2Entity.accountId.eq(accountId))
+                        .fetchOne());
+    }
 }

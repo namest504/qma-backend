@@ -8,8 +8,6 @@ import com.l1mit.qma_server.domain.member.dto.SignInRequest;
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
 import com.l1mit.qma_server.global.auth.oauth.factory.SocialAuthServiceFactory;
 import com.l1mit.qma_server.global.auth.oauth.service.SocialAuthService;
-import com.l1mit.qma_server.global.jwt.JwtProvider;
-import com.l1mit.qma_server.global.jwt.dto.JwtResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,16 +15,14 @@ public class AuthService {
 
     private final SocialAuthServiceFactory socialAuthServiceFactory;
     private final MemberService memberService;
-    private final JwtProvider jwtProvider;
 
     public AuthService(SocialAuthServiceFactory socialAuthServiceFactory,
-            MemberService memberService, JwtProvider jwtProvider) {
+            MemberService memberService) {
         this.socialAuthServiceFactory = socialAuthServiceFactory;
         this.memberService = memberService;
-        this.jwtProvider = jwtProvider;
     }
 
-    public JwtResponse signIn(String provider, SignInRequest request) {
+    public IdTokenResponse signIn(String provider, SignInRequest request) {
         SocialProvider socialProvider = getSocialProvider(provider);
         SocialAuthService socialAuthService = socialAuthServiceFactory.getAuthService(
                 socialProvider);
@@ -43,7 +39,7 @@ public class AuthService {
                                 .accountId(accountId)
                                 .build()));
 
-        return jwtProvider.createToken(oauth2Account);
+        return idTokenResponse;
     }
 
     private SocialProvider getSocialProvider(String provider) {

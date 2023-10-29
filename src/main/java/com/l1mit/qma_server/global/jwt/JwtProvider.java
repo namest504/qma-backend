@@ -2,9 +2,7 @@ package com.l1mit.qma_server.global.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.l1mit.qma_server.domain.member.MemberService;
 import com.l1mit.qma_server.domain.member.domain.Member;
-import com.l1mit.qma_server.global.auth.oauth.dto.PrincipalUser;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
 import com.l1mit.qma_server.global.jwt.dto.JwtResponse;
@@ -20,23 +18,19 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtProvider {
 
-    private final MemberService memberService;
     private final Key key;
     private final ObjectMapper objectMapper;
 
     private final Long ACCESS_TOKEN_VALID_TIME = 1000 * 60L * 60L; // 60분
     private final Long REFRESH_TOKEN_VALID_TIME = 1000 * 60 * 60 * 24 * 7L; // 1주
 
-    public JwtProvider(@Value("${jwt.secret}") String secretKey, MemberService memberService,
+    public JwtProvider(@Value("${jwt.secret}") String secretKey,
             ObjectMapper objectMapper) {
-        this.memberService = memberService;
         this.objectMapper = objectMapper;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -70,17 +64,34 @@ public class JwtProvider {
                 .compact();
     }
 
-    public Authentication getAuthentication(String accessToken) {
-        Claims claims = getTokenClaims(accessToken);
-        Member member = memberService.findById(Long.parseLong(claims.get("id", String.class)));
-        PrincipalUser principalUser = PrincipalUser.builder()
-                .member(member)
-                .build();
+    /*
+    *
+    *   인증 로직 JwtValidator로 이동 임시 주석처리
+        public Authentication getAuthentication(String accessToken) {
+            Claims claims = getTokenClaims(accessToken);
+            Member member = memberService.findById(Long.parseLong(claims.get("id", String.class)));
+            PrincipalUser principalUser = PrincipalUser.builder()
+                    .member(member)
+                    .build();
 
-        return new UsernamePasswordAuthenticationToken(principalUser, "",
-                principalUser.getAuthorities());
-    }
+            return new UsernamePasswordAuthenticationToken(principalUser, "",
+                    principalUser.getAuthorities());
+        }
 
+        public Authentication getAuthentication(String idToken, SocialProvider socialProvider) {
+            String accountId = socialAuthServiceFactory.getAccountId(socialProvider, idToken);
+            Claims claims = getTokenClaims(idToken, );
+            Member member = memberService.findById(Long.parseLong(claims.get("id", String.class)));
+            Member member = memberRepository.findByAccountId(accountId)
+                    .orElseThrow(() -> new QmaApiException(ErrorCode.UNAUTHORIZED));
+            PrincipalUser principalUser = PrincipalUser.builder()
+                    .member(member)
+                    .build();
+
+            return new UsernamePasswordAuthenticationToken(principalUser, "",
+                    principalUser.getAuthorities());
+        }
+    */
     public Map<String, String> parseHeaders(String token) {
         try {
             String header = token.split("\\.")[0];
