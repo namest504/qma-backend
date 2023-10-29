@@ -11,4 +11,6 @@ public interface MemberRepository {
     Optional<Member> findByOauth2AccountId(SocialProvider socialProvider, String accountId);
 
     Member save(Member member);
+
+    Optional<Member> findByAccountId(String accountId);
 }
