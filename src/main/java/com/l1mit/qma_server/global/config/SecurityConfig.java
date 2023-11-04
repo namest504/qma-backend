@@ -31,15 +31,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(setAuthorizeHttpRequests())
-                .headers(headers -> headers.frameOptions(FrameOptionsConfig::disable))
+                .httpBasic(
+                        AbstractHttpConfigurer::disable)
+                .csrf(
+                        AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(
+                        setAuthorizeHttpRequests())
+                .headers(
+                        headers -> headers.frameOptions(FrameOptionsConfig::disable))
                 .sessionManagement(
                         config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .addFilterBefore(jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(
+                        e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .addFilterBefore(
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
