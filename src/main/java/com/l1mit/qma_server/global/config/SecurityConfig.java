@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -30,36 +31,31 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .httpBasic(AbstractHttpConfigurer::disable)
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(setAuthorizeHttpRequests())
-                .headers(headers -> headers.frameOptions().disable())
+                .httpBasic(
+                        AbstractHttpConfigurer::disable)
+                .csrf(
+                        AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(
+                        setAuthorizeHttpRequests())
+                .headers(
+                        headers -> headers.frameOptions(FrameOptionsConfig::disable))
                 .sessionManagement(
                         config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .addFilterBefore(jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(
+                        e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .addFilterBefore(
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     private Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> setAuthorizeHttpRequests() {
         return requests ->
                 requests.requestMatchers(new AntPathRequestMatcher("/api/v1/auth/**")).permitAll()
-//                        .requestMatchers(new AntPathRequestMatcher("/api/v1/auth/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**",
+                                "/swagger-resources/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/docs/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/**")).authenticated();
     }
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.addAllowedOrigin("*");
-//        configuration.addAllowedMethod("*");
-////        configuration.setAllowedMethods(
-////                List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }®
 }

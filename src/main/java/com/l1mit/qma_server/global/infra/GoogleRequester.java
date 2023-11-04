@@ -2,13 +2,17 @@ package com.l1mit.qma_server.global.infra;
 
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
 import com.l1mit.qma_server.global.auth.oauth.key.OidcPublicKeyResponse;
+import com.l1mit.qma_server.global.exception.ErrorCode;
+import com.l1mit.qma_server.global.exception.QmaApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -46,6 +50,8 @@ public class GoogleRequester implements OauthAPIRequester {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .bodyValue(data)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse ->
+                        Mono.error(new QmaApiException(ErrorCode.THIRD_PARTY_API_EXCEPTION)))
                 .bodyToMono(IdTokenResponse.class)
                 .block();
     }
@@ -55,6 +61,8 @@ public class GoogleRequester implements OauthAPIRequester {
         return webclient.get()
                 .uri(GOOGLE_PUBLIC_KEY_INFO)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse ->
+                        Mono.error(new QmaApiException(ErrorCode.THIRD_PARTY_API_EXCEPTION)))
                 .bodyToMono(OidcPublicKeyResponse.class)
                 .block();
     }
