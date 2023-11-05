@@ -2,7 +2,9 @@ package com.l1mit.qma_server.domain.member.domain;
 
 import com.l1mit.qma_server.domain.member.domain.enums.Role;
 import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
-import com.l1mit.qma_server.global.audit.AuditEntity;
+import com.l1mit.qma_server.domain.question.Question;
+import com.l1mit.qma_server.global.common.domain.AuditEntity;
+import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -16,6 +18,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -50,6 +53,9 @@ public class Member {
 
     @Embedded
     private MbtiEntity mbtiEntity;
+
+    @OneToMany(mappedBy = "member")
+    private List<Question> questions;
 
     @Builder
     public Member(Oauth2Entity oauth2Entity) {
