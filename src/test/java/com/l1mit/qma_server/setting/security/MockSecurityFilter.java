@@ -1,4 +1,4 @@
-package com.l1mit.qma_server.setting;
+package com.l1mit.qma_server.setting.security;
 
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;

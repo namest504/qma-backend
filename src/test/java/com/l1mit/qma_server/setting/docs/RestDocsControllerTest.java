@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.l1mit.qma_server.global.filter.JwtAuthenticationFilter;
-import com.l1mit.qma_server.setting.MockSecurityFilter;
+import com.l1mit.qma_server.setting.security.MockSecurityFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -15,17 +15,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
-import com.l1mit.qma_server.domain.member.domain.MbtiEntity;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
-import com.l1mit.qma_server.domain.member.domain.enums.mbti.Attitude;
-import com.l1mit.qma_server.domain.member.domain.enums.mbti.Decision;
-import com.l1mit.qma_server.domain.member.domain.enums.mbti.Lifestyle;
-import com.l1mit.qma_server.domain.member.domain.enums.mbti.Perception;
 import com.l1mit.qma_server.domain.member.dto.SignInRequest;
 import com.l1mit.qma_server.global.auth.AuthService;
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
+import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
 import com.l1mit.qma_server.setting.docs.RestDocsControllerTest;
@@ -44,10 +40,6 @@ public class MemberControllerTest extends RestDocsControllerTest {
     MemberService memberService;
     @MockBean
     AuthService authService;
-//    @Autowired
-//    MemberService memberService;
-//    @Autowired
-//    AuthService authService;
 
     @Nested
     @DisplayName("signIn 메소드는")
@@ -169,10 +161,10 @@ public class MemberControllerTest extends RestDocsControllerTest {
                     .oauth2Entity(oauth2Entity)
                     .build();
             member.updateMbtiEntity(MbtiEntity.builder()
-                    .attitude(Attitude.I)
-                    .perception(Perception.S)
-                    .decision(Decision.T)
-                    .lifestyle(Lifestyle.J)
+                    .attitude("I")
+                    .perception("S")
+                    .decision("T")
+                    .lifestyle("J")
                     .build());
 
             given(memberService.findById(memberId)).willReturn(member);

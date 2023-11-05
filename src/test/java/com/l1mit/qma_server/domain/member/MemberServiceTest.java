@@ -7,12 +7,10 @@ import static org.mockito.BDDMockito.given;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
-import com.l1mit.qma_server.domain.member.repository.MemberJpaRepository;
 import com.l1mit.qma_server.domain.member.repository.MemberRepository;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,13 +27,13 @@ class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
-    @Mock
-    private MemberJpaRepository memberJpaRepository;
+//    @Mock
+//    private MemberCustomRepository memberCustomRepository;
 
-    @AfterEach
-    void clean() {
-        memberJpaRepository.deleteAll();
-    }
+//    @AfterEach
+//    void clean() {
+//        memberCustomRepository.deleteAll();
+//    }
 
     @Test
     @DisplayName("Id를 통해 Member를 찾는다.")
