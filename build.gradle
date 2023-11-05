@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		restdocsApiSpecVersion = '0.17.1' // restdocsApiSpecVersion 버전 변수 설정
+		restdocsApiSpecVersion = '0.17.1'
 	}
 }
 
@@ -108,7 +108,7 @@ openapi3 {
 
 
 // QueryDsl
-def generated = "$buildDir/generated/querydsl"
+def generated = "build/generated/querydsl"
 
 sourceSets {
 	main.java.srcDirs += [generated]

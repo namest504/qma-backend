@@ -8,7 +8,7 @@ public record SignInRequest(
         @JsonProperty("code")
         @NotBlank(message = "코드를 발급받고 진행해주세요.")
         String code,
-        @JsonProperty("redirect-uri")
+        @JsonProperty("redirect_uri")
         @NotBlank(message = "redirect-uri를 설정해주세요.")
         String redirectUri
 ) {
