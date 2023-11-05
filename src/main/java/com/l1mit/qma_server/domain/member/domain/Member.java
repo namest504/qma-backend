@@ -45,6 +45,9 @@ public class Member {
     @Column(name = "role")
     private List<Role> role;
 
+    @Column(name = "nickname", unique = true)
+    private String nickname;
+
     @Embedded
     private Oauth2Entity oauth2Entity;
 
@@ -60,12 +63,17 @@ public class Member {
     @Builder
     public Member(Oauth2Entity oauth2Entity) {
         this.oauth2Entity = oauth2Entity;
+        this.nickname = oauth2Entity.getAccountId();
         this.role = new ArrayList<>(List.of(Role.ROLE_MEMBER));
         this.auditEntity = new AuditEntity();
     }
 
     public void updateMbtiEntity(MbtiEntity mbtiEntity) {
         this.mbtiEntity = mbtiEntity;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public List<SimpleGrantedAuthority> getRole() {
