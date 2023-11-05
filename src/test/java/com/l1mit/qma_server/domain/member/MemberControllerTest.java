@@ -82,8 +82,8 @@ public class MemberControllerTest extends RestDocsControllerTest {
                                             )
                                             .requestFields(
                                                     fieldWithPath("code").description("code"),
-                                                    fieldWithPath("redirect-uri").description(
-                                                            "redirect-uri")
+                                                    fieldWithPath("redirect_uri").description(
+                                                            "redirect_uri")
                                             )
                                             .responseFields(
                                                     fieldWithPath("data").description("응답 데이터"),
@@ -127,8 +127,8 @@ public class MemberControllerTest extends RestDocsControllerTest {
                                             )
                                             .requestFields(
                                                     fieldWithPath("code").description("code"),
-                                                    fieldWithPath("redirect-uri").description(
-                                                            "redirect-uri")
+                                                    fieldWithPath("redirect_uri").description(
+                                                            "redirect_uri")
                                             )
                                             .responseFields(
                                                     fieldWithPath("data").description("응답 데이터"),
