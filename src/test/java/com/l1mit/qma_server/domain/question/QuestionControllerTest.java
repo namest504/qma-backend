@@ -17,6 +17,7 @@ import com.epages.restdocs.apispec.Schema;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
+import com.l1mit.qma_server.domain.question.dto.QuestionDetailResponse;
 import com.l1mit.qma_server.domain.question.dto.QuestionRequest;
 import com.l1mit.qma_server.domain.question.dto.QuestionResponse;
 import com.l1mit.qma_server.domain.question.dto.QuestionSearchParam;
@@ -136,6 +137,7 @@ class QuestionControllerTest extends RestDocsControllerTest {
                     .build();
 
             QuestionResponse questionResponse = QuestionResponse.builder()
+                    .id(1L)
                     .writer("때지")
                     .attitude("I")
                     .perception("S")
@@ -205,14 +207,19 @@ class QuestionControllerTest extends RestDocsControllerTest {
                                             )
                                             .responseFields(
                                                     fieldWithPath("data").description("응답 데이터"),
-                                                    fieldWithPath("data[].writer").description("작성자"),
-                                                    fieldWithPath("data[].attitude").description("대상 E, I"),
+                                                    fieldWithPath("data[].id").description("질문 번호"),
+                                                    fieldWithPath("data[].writer").description(
+                                                            "작성자"),
+                                                    fieldWithPath("data[].attitude").description(
+                                                            "대상 E, I"),
                                                     fieldWithPath("data[].perception").description(
                                                             "대상 N, S"),
-                                                    fieldWithPath("data[].decision").description("대상 T, F"),
+                                                    fieldWithPath("data[].decision").description(
+                                                            "대상 T, F"),
                                                     fieldWithPath("data[].lifestyle").description(
                                                             "대상 P, J"),
-                                                    fieldWithPath("data[].created_at").description("작성일"),
+                                                    fieldWithPath("data[].created_at").description(
+                                                            "작성일"),
                                                     fieldWithPath("message").description("오류 메세지"),
                                                     fieldWithPath("timestamp").description("응답 시간")
 
@@ -224,4 +231,61 @@ class QuestionControllerTest extends RestDocsControllerTest {
                     );
         }
     }
+
+    @Nested
+    @DisplayName("searchDetail 메소드는")
+    class searchDetail {
+
+        @Test
+        @DisplayName("성공한다.")
+        void success() throws Exception {
+            //given
+            Long questionId = 1L;
+            QuestionDetailResponse questionDetailResponse = QuestionDetailResponse.builder()
+                    .writer("글쓴이")
+                    .attitude("E")
+                    .perception("N")
+                    .decision("T")
+                    .lifestyle("P")
+                    .content("특정 상황에 대한 질문")
+                    .createdAt(LocalDate.of(2023, 11, 1))
+                    .build();
+            given(questionService.getDetail(questionId)).willReturn(questionDetailResponse);
+
+            //when
+            ResultActions resultActions = mockMvc.perform(get("/api/v1/question/{id}", questionId)
+                    .contentType(MediaType.APPLICATION_JSON));
+
+            //then
+            resultActions
+                    .andExpect(status().isOk())
+                    .andDo(document("searchDetail",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            resource(ResourceSnippetParameters.builder()
+                                    .tag("질문")
+                                    .summary("조회")
+                                    .description("질문 번호에 맞는 질문을 조회하는 API")
+                                    .pathParameters(
+                                            parameterWithName("id").description("질문 번호")
+                                    )
+                                    .responseFields(
+                                            fieldWithPath("data").description("응답 데이터"),
+                                            fieldWithPath("data.writer").description("응답 데이터"),
+                                            fieldWithPath("data.attitude").description("대상 E, I"),
+                                            fieldWithPath("data.perception").description("대상 N, S"),
+                                            fieldWithPath("data.decision").description("대상 T, F"),
+                                            fieldWithPath("data.lifestyle").description("대상 J, P"),
+                                            fieldWithPath("data.content").description("내용"),
+                                            fieldWithPath("data.created_at").description("작성일"),
+                                            fieldWithPath("message").description("오류 메세지"),
+                                            fieldWithPath("timestamp").description("응답 시간")
+                                    )
+                                    .responseSchema(Schema.schema("QuestionDetailResponse"))
+                                    .build()
+                            )));
+
+        }
+    }
+
 }
