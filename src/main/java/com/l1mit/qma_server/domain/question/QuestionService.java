@@ -2,6 +2,7 @@ package com.l1mit.qma_server.domain.question;
 
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.repository.MemberRepository;
+import com.l1mit.qma_server.domain.question.dto.QuestionDetailResponse;
 import com.l1mit.qma_server.domain.question.dto.QuestionRequest;
 import com.l1mit.qma_server.domain.question.dto.QuestionResponse;
 import com.l1mit.qma_server.domain.question.dto.QuestionSearchParam;
@@ -46,5 +47,10 @@ public class QuestionService {
     public List<QuestionResponse> searchWithCondition(Pageable pageable,
             QuestionSearchParam param) {
         return questionRepository.searchWithCondition(pageable, param);
+    }
+
+    public QuestionDetailResponse getDetail(Long id) {
+        return questionRepository.findByIdWithDetail(id)
+                .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
     }
 }

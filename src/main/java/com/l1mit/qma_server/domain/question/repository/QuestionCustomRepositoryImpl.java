@@ -7,12 +7,14 @@ import com.l1mit.qma_server.domain.member.domain.enums.mbti.Attitude;
 import com.l1mit.qma_server.domain.member.domain.enums.mbti.Decision;
 import com.l1mit.qma_server.domain.member.domain.enums.mbti.Lifestyle;
 import com.l1mit.qma_server.domain.member.domain.enums.mbti.Perception;
+import com.l1mit.qma_server.domain.question.dto.QuestionDetailResponse;
 import com.l1mit.qma_server.domain.question.dto.QuestionResponse;
 import com.l1mit.qma_server.domain.question.dto.QuestionSearchParam;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 
 public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
@@ -29,6 +31,7 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
         BooleanBuilder builder = getBooleanBuilder(param);
 
         return jpaQueryFactory.select(Projections.constructor(QuestionResponse.class,
+                        question.id.as("id"),
                         question.member.nickname.as("writer"),
                         question.receiveMbtiEntity.attitude.as("attitude"),
                         question.receiveMbtiEntity.perception.as("perception"),
@@ -39,6 +42,25 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
                 .from(question)
                 .where(builder)
                 .fetch();
+    }
+
+    @Override
+    public Optional<QuestionDetailResponse> findByIdWithDetail(Long id) {
+        return Optional.ofNullable(
+                jpaQueryFactory.select(Projections.constructor(QuestionDetailResponse.class,
+                                question.id.as("id"),
+                                question.member.nickname.as("writer"),
+                                question.receiveMbtiEntity.attitude.as("attitude"),
+                                question.receiveMbtiEntity.perception.as("perception"),
+                                question.receiveMbtiEntity.decision.as("decision"),
+                                question.receiveMbtiEntity.lifestyle.as("lifestyle"),
+                                question.content.as("content"),
+                                question.auditEntity.createdAt.as("created_at")
+                        ))
+                        .from(question)
+                        .where(question.id.eq(id))
+                        .fetchOne()
+        );
     }
 
     private BooleanBuilder getBooleanBuilder(QuestionSearchParam param) {
