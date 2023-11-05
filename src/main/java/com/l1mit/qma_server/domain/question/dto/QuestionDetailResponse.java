@@ -2,6 +2,7 @@ package com.l1mit.qma_server.domain.question.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
+import lombok.Builder;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public record QuestionDetailResponse(
@@ -28,4 +29,7 @@ public record QuestionDetailResponse(
         LocalDate createdAt
 ) {
 
+    @Builder
+    public QuestionDetailResponse {
+    }
 }
