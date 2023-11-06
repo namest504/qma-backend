@@ -11,6 +11,7 @@ import com.l1mit.qma_server.global.common.MemberId;
 import com.l1mit.qma_server.global.common.response.ApiResponse;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +39,8 @@ public class QuestionController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<QuestionResponse>>> search(Pageable pageable,
+    public ResponseEntity<ApiResponse<List<QuestionResponse>>> search(
+            @PageableDefault Pageable pageable,
             QuestionSearchParam questionSearchParam) {
         final List<QuestionResponse> questionResponses = questionService.searchWithCondition(
                 pageable, questionSearchParam);
