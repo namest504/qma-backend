@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
+import com.epages.restdocs.apispec.SimpleType;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
@@ -32,6 +33,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(controllers = QuestionController.class)
@@ -179,49 +181,77 @@ class QuestionControllerTest extends RestDocsControllerTest {
                                             .description("질문을 조건에 따라 검색 하는 API")
                                             .queryParameters(
                                                     parameterWithName("page").optional()
+                                                            .type(SimpleType.NUMBER).defaultValue(0)
                                                             .description("페이지 번호"),
                                                     parameterWithName("size").optional()
+                                                            .type(SimpleType.NUMBER)
+                                                            .defaultValue(10)
                                                             .description("페이지 크기"),
                                                     parameterWithName("writer").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("작성자"),
                                                     parameterWithName("sendAttitude").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("보낸이 E, I"),
                                                     parameterWithName("sendPerception").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("보낸이 N, S"),
                                                     parameterWithName("sendDecision").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("보낸이 T, F"),
                                                     parameterWithName("sendLifestyle").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("보낸이 P, J"),
                                                     parameterWithName("receiveAttitude").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("대상 E, I"),
-                                                    parameterWithName("receivePerception").optional()
+                                                    parameterWithName(
+                                                            "receivePerception").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("대상 N, S"),
                                                     parameterWithName("receiveDecision").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("대상 T, F"),
                                                     parameterWithName("receiveLifestyle").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("대상 P, J"),
                                                     parameterWithName("startTime").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("검색 시작 날짜"),
                                                     parameterWithName("endTime").optional()
+                                                            .type(SimpleType.STRING)
                                                             .description("검색 종료 날짜")
                                             )
                                             .responseFields(
-                                                    fieldWithPath("data").description("응답 데이터"),
-                                                    fieldWithPath("data[].id").description("질문 번호"),
-                                                    fieldWithPath("data[].writer").description(
-                                                            "작성자"),
-                                                    fieldWithPath("data[].attitude").description(
-                                                            "대상 E, I"),
-                                                    fieldWithPath("data[].perception").description(
-                                                            "대상 N, S"),
-                                                    fieldWithPath("data[].decision").description(
-                                                            "대상 T, F"),
-                                                    fieldWithPath("data[].lifestyle").description(
-                                                            "대상 P, J"),
-                                                    fieldWithPath("data[].created_at").description(
-                                                            "작성일"),
-                                                    fieldWithPath("message").description("오류 메세지"),
-                                                    fieldWithPath("timestamp").description("응답 시간")
+                                                    fieldWithPath("data").type(JsonFieldType.ARRAY)
+                                                            .description("응답 데이터"),
+                                                    fieldWithPath("data[].id").type(
+                                                                    JsonFieldType.NUMBER)
+                                                            .description("질문 번호"),
+                                                    fieldWithPath("data[].writer").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("작성자"),
+                                                    fieldWithPath("data[].attitude").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("대상 E, I"),
+                                                    fieldWithPath("data[].perception").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("대상 N, S"),
+                                                    fieldWithPath("data[].decision").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("대상 T, F"),
+                                                    fieldWithPath("data[].lifestyle").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("대상 P, J"),
+                                                    fieldWithPath("data[].created_at").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("작성일"),
+                                                    fieldWithPath("message").type(
+                                                                    JsonFieldType.NULL)
+                                                            .description("오류 메세지"),
+                                                    fieldWithPath("timestamp").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("응답 시간")
 
                                             )
                                             .responseSchema(Schema.schema("QuestionResponse"))
@@ -267,19 +297,35 @@ class QuestionControllerTest extends RestDocsControllerTest {
                                     .summary("조회")
                                     .description("질문 번호에 맞는 질문을 조회하는 API")
                                     .pathParameters(
-                                            parameterWithName("id").description("질문 번호")
+                                            parameterWithName("id").type(SimpleType.NUMBER)
+                                                    .description("질문 번호")
                                     )
                                     .responseFields(
-                                            fieldWithPath("data").description("응답 데이터"),
-                                            fieldWithPath("data.writer").description("응답 데이터"),
-                                            fieldWithPath("data.attitude").description("대상 E, I"),
-                                            fieldWithPath("data.perception").description("대상 N, S"),
-                                            fieldWithPath("data.decision").description("대상 T, F"),
-                                            fieldWithPath("data.lifestyle").description("대상 J, P"),
-                                            fieldWithPath("data.content").description("내용"),
-                                            fieldWithPath("data.created_at").description("작성일"),
-                                            fieldWithPath("message").description("오류 메세지"),
-                                            fieldWithPath("timestamp").description("응답 시간")
+                                            fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                                    .description("응답 데이터"),
+                                            fieldWithPath("data.writer").type(JsonFieldType.STRING)
+                                                    .description("응답 데이터"),
+                                            fieldWithPath("data.attitude").type(
+                                                            JsonFieldType.STRING)
+                                                    .description("대상 E, I"),
+                                            fieldWithPath("data.perception").type(
+                                                            JsonFieldType.STRING)
+                                                    .description("대상 N, S"),
+                                            fieldWithPath("data.decision").type(
+                                                            JsonFieldType.STRING)
+                                                    .description("대상 T, F"),
+                                            fieldWithPath("data.lifestyle").type(
+                                                            JsonFieldType.STRING)
+                                                    .description("대상 J, P"),
+                                            fieldWithPath("data.content").type(JsonFieldType.STRING)
+                                                    .description("내용"),
+                                            fieldWithPath("data.created_at").type(
+                                                            JsonFieldType.STRING)
+                                                    .description("작성일"),
+                                            fieldWithPath("message").type(JsonFieldType.NULL)
+                                                    .description("오류 메세지"),
+                                            fieldWithPath("timestamp").type(JsonFieldType.STRING)
+                                                    .description("응답 시간")
                                     )
                                     .responseSchema(Schema.schema("QuestionDetailResponse"))
                                     .build()

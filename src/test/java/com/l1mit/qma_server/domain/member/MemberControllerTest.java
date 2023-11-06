@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
+import com.epages.restdocs.apispec.SimpleType;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(controllers = MemberController.class)
@@ -77,23 +79,32 @@ public class MemberControllerTest extends RestDocsControllerTest {
                                             .tag("유저")
                                             .summary("로그인")
                                             .pathParameters(
-                                                    parameterWithName("PROVIDER")
+                                                    parameterWithName("PROVIDER").type(
+                                                                    SimpleType.NUMBER)
                                                             .description("소셜 서비스")
                                             )
                                             .requestFields(
-                                                    fieldWithPath("code").description("code"),
-                                                    fieldWithPath("redirect_uri").description(
-                                                            "redirect_uri")
+                                                    fieldWithPath("code").type(JsonFieldType.STRING)
+                                                            .description("code"),
+                                                    fieldWithPath("redirect_uri").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("redirect_uri")
                                             )
                                             .responseFields(
-                                                    fieldWithPath("data").description("응답 데이터"),
-                                                    fieldWithPath("data.id_token").description("토큰"),
-                                                    fieldWithPath("message").description("오류 메세지"),
-                                                    fieldWithPath("timestamp").description("타임 스탬프")
+                                                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                                            .description("응답 데이터"),
+                                                    fieldWithPath("data.id_token").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("토큰"),
+                                                    fieldWithPath("message").type(
+                                                                    JsonFieldType.NULL)
+                                                            .description("오류 메세지"),
+                                                    fieldWithPath("timestamp").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("타임 스탬프")
                                             )
                                             .requestSchema(Schema.schema("SignInRequest"))
                                             .responseSchema(Schema.schema("IdTokenResponse"))
-
                                             .build()
                                     )
                             )
@@ -126,14 +137,21 @@ public class MemberControllerTest extends RestDocsControllerTest {
                                                     parameterWithName("PROVIDER").description("소셜 서비스")
                                             )
                                             .requestFields(
-                                                    fieldWithPath("code").description("code"),
-                                                    fieldWithPath("redirect_uri").description(
-                                                            "redirect_uri")
+                                                    fieldWithPath("code").type(JsonFieldType.STRING)
+                                                            .description("code"),
+                                                    fieldWithPath("redirect_uri").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("redirect_uri")
                                             )
                                             .responseFields(
-                                                    fieldWithPath("data").description("응답 데이터"),
-                                                    fieldWithPath("message").description("오류 메세지"),
-                                                    fieldWithPath("timestamp").description("타임 스탬프")
+                                                    fieldWithPath("data").type(JsonFieldType.NULL)
+                                                            .description("응답 데이터"),
+                                                    fieldWithPath("message").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("오류 메세지"),
+                                                    fieldWithPath("timestamp").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("타임 스탬프")
                                             )
                                             .requestSchema(Schema.schema("SignInRequest"))
                                             .responseSchema(Schema.schema("IdTokenResponse"))
@@ -183,22 +201,40 @@ public class MemberControllerTest extends RestDocsControllerTest {
                                             .tag("유저")
                                             .summary("정보 불러오기")
                                             .requestHeaders(
-                                                    headerWithName("Authorization").description("인증 토큰"),
-                                                    headerWithName("Provider").description("인증 소셜 서비스 이름")
+                                                    headerWithName("Authorization").type(
+                                                                    SimpleType.STRING)
+                                                            .description("인증 토큰"),
+                                                    headerWithName("Provider").type(
+                                                                    SimpleType.STRING)
+                                                            .description("인증 소셜 서비스 이름")
                                             )
                                             .responseFields(
-                                                    fieldWithPath("data").description("응답 데이터"),
-                                                    fieldWithPath("data.provider").description(
-                                                            "가입한 소셜 서비스"),
-                                                    fieldWithPath("data.mbti").description("유저의 mbti"),
-                                                    fieldWithPath("data.mbti.attitude").description("I, E"),
-                                                    fieldWithPath("data.mbti.perception").description(
-                                                            "S, N"),
-                                                    fieldWithPath("data.mbti.decision").description("T, F"),
-                                                    fieldWithPath("data.mbti.lifestyle").description(
-                                                            "P, J"),
-                                                    fieldWithPath("message").description("오류 메세지"),
-                                                    fieldWithPath("timestamp").description("타임 스탬프")
+                                                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                                            .description("응답 데이터"),
+                                                    fieldWithPath("data.provider").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("가입한 소셜 서비스"),
+                                                    fieldWithPath("data.mbti").type(
+                                                                    JsonFieldType.OBJECT)
+                                                            .description("유저의 mbti"),
+                                                    fieldWithPath("data.mbti.attitude").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("I, E"),
+                                                    fieldWithPath("data.mbti.perception").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("S, N"),
+                                                    fieldWithPath("data.mbti.decision").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("T, F"),
+                                                    fieldWithPath("data.mbti.lifestyle").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("P, J"),
+                                                    fieldWithPath("message").type(
+                                                                    JsonFieldType.NULL)
+                                                            .description("오류 메세지"),
+                                                    fieldWithPath("timestamp").type(
+                                                                    JsonFieldType.STRING)
+                                                            .description("타임 스탬프")
                                             )
                                             .responseSchema(Schema.schema("MemberInfoResponse"))
                                             .build()
