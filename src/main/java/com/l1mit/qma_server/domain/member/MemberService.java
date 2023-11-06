@@ -3,6 +3,7 @@ package com.l1mit.qma_server.domain.member;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
+import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
 import com.l1mit.qma_server.domain.member.repository.MemberRepository;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
@@ -14,15 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, MemberMapper memberMapper) {
         this.memberRepository = memberRepository;
+        this.memberMapper = memberMapper;
     }
 
     @Transactional(readOnly = true)
-    public Member findById(Long id) {
-        return memberRepository.findById(id)
+    public MemberInfoResponse findById(Long id) {
+        Member findedMember = memberRepository.findById(id)
                 .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
+        return memberMapper.entityToMemberInfoResponse(findedMember);
     }
 
     @Transactional(readOnly = true)

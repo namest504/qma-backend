@@ -1,6 +1,5 @@
 package com.l1mit.qma_server.domain.member;
 
-import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
 import com.l1mit.qma_server.domain.member.dto.SignInRequest;
 import com.l1mit.qma_server.global.auth.AuthService;
@@ -41,9 +40,9 @@ public class MemberController {
 
     @GetMapping("/my-info")
     public ResponseEntity<ApiResponse<MemberInfoResponse>> myInfo(@MemberId Long memberId) {
-        Member member = memberService.findById(memberId);
+        MemberInfoResponse memberInfoResponse = memberService.findById(memberId);
         return ResponseEntity.ok()
-                .body(ApiResponse.createSuccessWithData(member.toMemberResponse()));
+                .body(ApiResponse.createSuccessWithData(memberInfoResponse));
     }
 
 }
