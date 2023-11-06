@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
+import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
 import com.l1mit.qma_server.domain.member.repository.MemberRepository;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
@@ -27,13 +28,8 @@ class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
-//    @Mock
-//    private MemberCustomRepository memberCustomRepository;
-
-//    @AfterEach
-//    void clean() {
-//        memberCustomRepository.deleteAll();
-//    }
+    @Mock
+    MemberMapper memberMapper;
 
     @Test
     @DisplayName("Id를 통해 Member를 찾는다.")
@@ -47,14 +43,21 @@ class MemberServiceTest {
                                 .socialProvider(SocialProvider.valueOf("KAKAO"))
                                 .build())
                 .build();
+
+        MemberInfoResponse memberInfoResponse = MemberInfoResponse.builder()
+                .provider(SocialProvider.KAKAO)
+                .build();
+
         given(memberRepository.findById(id))
-                .willReturn(Optional.of(member));
+                .willReturn(Optional.ofNullable(member));
+        given(memberMapper.entityToMemberInfoResponse(member))
+                .willReturn(memberInfoResponse);
 
         //when
-        Member byId = memberService.findById(id);
+        MemberInfoResponse findResult = memberService.findById(id);
 
         //then
-        assertThat(member).isEqualTo(byId);
+        assertThat(findResult).isEqualTo(memberInfoResponse);
     }
 
     @Test

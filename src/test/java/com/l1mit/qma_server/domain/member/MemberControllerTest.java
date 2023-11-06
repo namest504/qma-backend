@@ -16,9 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.epages.restdocs.apispec.SimpleType;
-import com.l1mit.qma_server.domain.member.domain.Member;
-import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
+import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
 import com.l1mit.qma_server.domain.member.dto.SignInRequest;
 import com.l1mit.qma_server.global.auth.AuthService;
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
@@ -171,21 +170,17 @@ public class MemberControllerTest extends RestDocsControllerTest {
         void success() throws Exception {
             //given
             Long memberId = 1L;
-            Oauth2Entity oauth2Entity = Oauth2Entity.builder()
-                    .accountId("1")
-                    .socialProvider(SocialProvider.KAKAO)
+            MemberInfoResponse memberInfoResponse = MemberInfoResponse.builder()
+                    .provider(SocialProvider.KAKAO)
+                    .mbtiEntity(MbtiEntity.builder()
+                            .attitude("I")
+                            .perception("S")
+                            .decision("T")
+                            .lifestyle("J")
+                            .build())
                     .build();
-            Member member = Member.builder()
-                    .oauth2Entity(oauth2Entity)
-                    .build();
-            member.updateMbtiEntity(MbtiEntity.builder()
-                    .attitude("I")
-                    .perception("S")
-                    .decision("T")
-                    .lifestyle("J")
-                    .build());
 
-            given(memberService.findById(memberId)).willReturn(member);
+            given(memberService.findById(memberId)).willReturn(memberInfoResponse);
             //when
             ResultActions resultActions = mockMvc.perform(get("/api/v1/auth/my-info")
                     .header("Authorization", "id_token")
