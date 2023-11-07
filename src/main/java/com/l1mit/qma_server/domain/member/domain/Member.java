@@ -1,7 +1,6 @@
 package com.l1mit.qma_server.domain.member.domain;
 
 import com.l1mit.qma_server.domain.member.domain.enums.Role;
-import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
 import com.l1mit.qma_server.domain.question.Question;
 import com.l1mit.qma_server.global.common.domain.AuditEntity;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
@@ -81,9 +80,5 @@ public class Member {
                 .map(Role::name)
                 .map(SimpleGrantedAuthority::new)
                 .toList();
-    }
-
-    public MemberInfoResponse toMemberResponse() {
-        return new MemberInfoResponse(oauth2Entity.getSocialProvider(), mbtiEntity);
     }
 }
