@@ -1,8 +1,11 @@
 package com.l1mit.qma_server.domain.answer;
 
 import com.l1mit.qma_server.domain.answer.dto.AnswerRequest;
+import com.l1mit.qma_server.domain.answer.dto.AnswerResponse;
 import com.l1mit.qma_server.domain.answer.repository.AnswerRepository;
 import com.l1mit.qma_server.global.facade.AnswerFacade;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,5 +24,9 @@ public class AnswerService {
     public void create(AnswerRequest request, Long memberId) {
         Answer answer = answerFacade.create(request, memberId);
         answerRepository.save(answer);
+    }
+
+    public Page<AnswerResponse> findPagedAnswerByQuestionId(Pageable pageable, Long questionId) {
+        return answerRepository.findPagedAnswerByQuestionId(pageable, questionId);
     }
 }
