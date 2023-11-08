@@ -66,17 +66,17 @@ class QuestionControllerTest extends RestDocsControllerTest {
             //then
             resultActions
                     .andExpect(status().isNoContent())
-                    .andDo(document("insert",
-                                    preprocessRequest(prettyPrint()),
-                                    preprocessResponse(prettyPrint()),
-                                    resource(ResourceSnippetParameters.builder()
-                                            .tag("질문")
-                                            .summary("업로드")
-                                            .description("질문을 업로드 하는 API")
-                                            .requestFields(
-                                                    fieldWithPath("content").description("질문 내용"),
-                                                    fieldWithPath("attitude").description("E, I"),
-                                                    fieldWithPath("perception").description("N, S"),
+                    .andDo(document("question-create",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            resource(ResourceSnippetParameters.builder()
+                                    .tag("질문")
+                                    .summary("업로드")
+                                    .description("질문을 업로드 하는 API")
+                                    .requestFields(
+                                            fieldWithPath("content").description("질문 내용"),
+                                            fieldWithPath("attitude").description("E, I"),
+                                            fieldWithPath("perception").description("N, S"),
                                                     fieldWithPath("decision").description("T, F"),
                                                     fieldWithPath("lifestyle").description("P, J")
                                             )
@@ -145,7 +145,7 @@ class QuestionControllerTest extends RestDocsControllerTest {
                     .perception("S")
                     .decision("T")
                     .lifestyle("J")
-                    .createdAt(LocalDate.of(2023, 11, 2))
+                    .createdAt(LocalDate.of(2023, 11, 2).atStartOfDay())
                     .build();
 
             PageRequest pageRequest = PageRequest.of(0, 10);
@@ -172,10 +172,10 @@ class QuestionControllerTest extends RestDocsControllerTest {
             //then
             resultActions
                     .andExpect(status().isOk())
-                    .andDo(document("create",
-                                    preprocessRequest(prettyPrint()),
-                                    preprocessResponse(prettyPrint()),
-                                    resource(ResourceSnippetParameters.builder()
+                    .andDo(document("question-search",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            resource(ResourceSnippetParameters.builder()
                                             .tag("질문")
                                             .summary("조회")
                                             .description("질문을 조건에 따라 검색 하는 API")
@@ -278,7 +278,7 @@ class QuestionControllerTest extends RestDocsControllerTest {
                     .decision("T")
                     .lifestyle("P")
                     .content("특정 상황에 대한 질문")
-                    .createdAt(LocalDate.of(2023, 11, 1))
+                    .createdAt(LocalDate.of(2023, 11, 1).atStartOfDay())
                     .build();
             given(questionService.getDetail(questionId)).willReturn(questionDetailResponse);
 
@@ -289,7 +289,7 @@ class QuestionControllerTest extends RestDocsControllerTest {
             //then
             resultActions
                     .andExpect(status().isOk())
-                    .andDo(document("searchDetail",
+                    .andDo(document("question-search-detail",
                             preprocessRequest(prettyPrint()),
                             preprocessResponse(prettyPrint()),
                             resource(ResourceSnippetParameters.builder()

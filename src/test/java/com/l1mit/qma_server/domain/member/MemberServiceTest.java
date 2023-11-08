@@ -54,7 +54,7 @@ class MemberServiceTest {
                 .willReturn(memberInfoResponse);
 
         //when
-        MemberInfoResponse findResult = memberService.findById(id);
+        MemberInfoResponse findResult = memberService.findMemberInfoResponseById(id);
 
         //then
         assertThat(findResult).isEqualTo(memberInfoResponse);

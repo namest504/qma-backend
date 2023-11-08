@@ -71,10 +71,10 @@ public class MemberControllerTest extends RestDocsControllerTest {
             //then
             resultActions
                     .andExpect(status().isOk())
-                    .andDo(document("sign-in",
-                                    preprocessRequest(prettyPrint()),
-                                    preprocessResponse(prettyPrint()),
-                                    resource(ResourceSnippetParameters.builder()
+                    .andDo(document("member-sign-in",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            resource(ResourceSnippetParameters.builder()
                                             .tag("유저")
                                             .summary("로그인")
                                             .pathParameters(
@@ -126,10 +126,10 @@ public class MemberControllerTest extends RestDocsControllerTest {
             //then
             resultActions
                     .andExpect(status().isBadRequest())
-                    .andDo(document("sign-in-fail",
-                                    preprocessRequest(prettyPrint()),
-                                    preprocessResponse(prettyPrint()),
-                                    resource(ResourceSnippetParameters.builder()
+                    .andDo(document("member-sign-in-fail",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            resource(ResourceSnippetParameters.builder()
                                             .tag("유저")
                                             .summary("로그인")
                                             .pathParameters(
@@ -180,7 +180,8 @@ public class MemberControllerTest extends RestDocsControllerTest {
                             .build())
                     .build();
 
-            given(memberService.findById(memberId)).willReturn(memberInfoResponse);
+            given(memberService.findMemberInfoResponseById(memberId)).willReturn(
+                    memberInfoResponse);
             //when
             ResultActions resultActions = mockMvc.perform(get("/api/v1/auth/my-info")
                     .header("Authorization", "id_token")
@@ -189,10 +190,10 @@ public class MemberControllerTest extends RestDocsControllerTest {
             //then
             resultActions
                     .andExpect(status().isOk())
-                    .andDo(document("my-info",
-                                    preprocessRequest(prettyPrint()),
-                                    preprocessResponse(prettyPrint()),
-                                    resource(ResourceSnippetParameters.builder()
+                    .andDo(document("member-my-info",
+                            preprocessRequest(prettyPrint()),
+                            preprocessResponse(prettyPrint()),
+                            resource(ResourceSnippetParameters.builder()
                                             .tag("유저")
                                             .summary("정보 불러오기")
                                             .requestHeaders(
