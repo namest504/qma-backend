@@ -1,9 +1,8 @@
 package com.l1mit.qma_server.domain.question.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Builder;
-import org.springframework.format.annotation.DateTimeFormat;
 
 public record QuestionResponse(
         @JsonProperty("id")
@@ -25,8 +24,7 @@ public record QuestionResponse(
         String lifestyle,
 
         @JsonProperty("created_at")
-        @DateTimeFormat(pattern = "yyyy-MM-dd")
-        LocalDate createdAt
+        LocalDateTime createdAt
 ) {
 
     @Builder
