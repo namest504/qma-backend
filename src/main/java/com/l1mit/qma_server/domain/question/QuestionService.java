@@ -53,4 +53,9 @@ public class QuestionService {
         return questionRepository.findByIdWithDetail(id)
                 .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
     }
+
+    public Question findById(Long id) {
+        return questionRepository.findById(id)
+                .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
+    }
 }

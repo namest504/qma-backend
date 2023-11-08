@@ -1,9 +1,9 @@
 package com.l1mit.qma_server.domain.question;
 
+import com.l1mit.qma_server.domain.answer.Answer;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.global.common.domain.AuditEntity;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
-import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +27,6 @@ public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "question_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,11 +36,11 @@ public class Question {
     @Lob
     private String content;
 
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers;
+
     @Embedded
     private MbtiEntity receiveMbtiEntity;
-
-//    @Embedded
-//    private MbtiEntity sendMbtiEntity;
 
     @Embedded
     private AuditEntity auditEntity;
@@ -52,7 +53,6 @@ public class Question {
         this.member = member;
         this.content = content;
         this.receiveMbtiEntity = receiveMbtiEntity;
-//        this.sendMbtiEntity = member.getMbtiEntity();
         this.auditEntity = new AuditEntity();
     }
 }

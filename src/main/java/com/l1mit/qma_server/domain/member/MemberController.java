@@ -40,7 +40,7 @@ public class MemberController {
 
     @GetMapping("/my-info")
     public ResponseEntity<ApiResponse<MemberInfoResponse>> myInfo(@MemberId Long memberId) {
-        MemberInfoResponse memberInfoResponse = memberService.findById(memberId);
+        MemberInfoResponse memberInfoResponse = memberService.findMemberInfoResponseById(memberId);
         return ResponseEntity.ok()
                 .body(ApiResponse.createSuccessWithData(memberInfoResponse));
     }

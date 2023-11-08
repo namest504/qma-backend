@@ -22,11 +22,15 @@ public class MemberService {
         this.memberMapper = memberMapper;
     }
 
-    @Transactional(readOnly = true)
-    public MemberInfoResponse findById(Long id) {
+    public MemberInfoResponse findMemberInfoResponseById(Long id) {
         Member findedMember = memberRepository.findById(id)
                 .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
         return memberMapper.entityToMemberInfoResponse(findedMember);
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
