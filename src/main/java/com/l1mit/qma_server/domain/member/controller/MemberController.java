@@ -1,8 +1,8 @@
-package com.l1mit.qma_server.domain.member;
+package com.l1mit.qma_server.domain.member.controller;
 
-import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
 import com.l1mit.qma_server.domain.member.dto.SignInRequest;
+import com.l1mit.qma_server.domain.member.service.MemberService;
 import com.l1mit.qma_server.global.auth.AuthService;
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
 import com.l1mit.qma_server.global.common.MemberId;
@@ -41,9 +41,9 @@ public class MemberController {
 
     @GetMapping("/my-info")
     public ResponseEntity<ApiResponse<MemberInfoResponse>> myInfo(@MemberId Long memberId) {
-        Member member = memberService.findById(memberId);
+        MemberInfoResponse memberInfoResponse = memberService.findMemberInfoResponseById(memberId);
         return ResponseEntity.ok()
-                .body(ApiResponse.createSuccessWithData(member.toMemberResponse()));
+                .body(ApiResponse.createSuccessWithData(memberInfoResponse));
     }
 
 }

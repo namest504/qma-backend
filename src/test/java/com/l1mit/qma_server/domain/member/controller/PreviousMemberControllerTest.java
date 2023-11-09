@@ -1,4 +1,4 @@
-package com.l1mit.qma_server.domain.member;
+package com.l1mit.qma_server.domain.member.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.l1mit.qma_server.domain.member.dto.SignInRequest;
+import com.l1mit.qma_server.domain.member.service.MemberService;
 import com.l1mit.qma_server.global.auth.AuthService;
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
 import com.l1mit.qma_server.global.config.SecurityConfig;

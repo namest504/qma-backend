@@ -5,31 +5,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.l1mit.qma_server.setting.jpa.QueryDslConfig;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Import;
 
+@Import(QueryDslConfig.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 class MemberRepositoryTest {
 
-    private MemberRepository memberRepository;
-
     @Autowired
-    private MemberJpaRepository memberJpaRepository;
-
-    @Autowired
-    private TestEntityManager entityManager;
-
-    @BeforeEach
-    void setUp() {
-        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(entityManager.getEntityManager());
-        memberRepository = new MemberRepositoryImpl(memberJpaRepository, jpaQueryFactory);
-    }
+    MemberRepository memberRepository;
 
     @Test
     @DisplayName("Member를 Id를 통해 찾는데 성공한다.")

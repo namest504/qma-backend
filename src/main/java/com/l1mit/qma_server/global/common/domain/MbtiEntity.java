@@ -1,4 +1,4 @@
-package com.l1mit.qma_server.domain.member.domain;
+package com.l1mit.qma_server.global.common.domain;
 
 import com.l1mit.qma_server.domain.member.domain.enums.mbti.Attitude;
 import com.l1mit.qma_server.domain.member.domain.enums.mbti.Decision;
@@ -35,11 +35,14 @@ public class MbtiEntity {
     private Lifestyle lifestyle;
 
     @Builder
-    public MbtiEntity(Attitude attitude, Perception perception, Decision decision,
-            Lifestyle lifestyle) {
-        this.attitude = attitude;
-        this.perception = perception;
-        this.decision = decision;
-        this.lifestyle = lifestyle;
+    public MbtiEntity(
+            final String attitude,
+            final String perception,
+            final String decision,
+            final String lifestyle) {
+        this.attitude = Attitude.valueOf(attitude);
+        this.perception = Perception.valueOf(perception);
+        this.decision = Decision.valueOf(decision);
+        this.lifestyle = Lifestyle.valueOf(lifestyle);
     }
 }

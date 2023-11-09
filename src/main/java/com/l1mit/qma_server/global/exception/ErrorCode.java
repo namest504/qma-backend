@@ -17,7 +17,8 @@ public enum ErrorCode {
 
     NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 정보입니다."),
     JSON_PROCESSING(HttpStatus.BAD_REQUEST, "JSON 변환 중 에러가 발생했습니다."),
-    FAILED_OIDC_PUBLIC_KEY(HttpStatus.BAD_REQUEST, "OIDC 공개키 생성에 문제가 발생했습니다.");
+    FAILED_OIDC_PUBLIC_KEY(HttpStatus.BAD_REQUEST, "OIDC 공개키 생성에 문제가 발생했습니다."),
+    NOT_MATCHED_MBTI(HttpStatus.BAD_REQUEST, "대상 MBTI와 일치하지 않습니다.");
 
     private final HttpStatus status;
     private final String message;

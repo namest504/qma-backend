@@ -1,4 +1,4 @@
-package com.l1mit.qma_server.domain.member;
+package com.l1mit.qma_server.domain.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,12 +7,12 @@ import static org.mockito.BDDMockito.given;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
-import com.l1mit.qma_server.domain.member.repository.MemberJpaRepository;
+import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
+import com.l1mit.qma_server.domain.member.mapper.MemberMapper;
 import com.l1mit.qma_server.domain.member.repository.MemberRepository;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,12 +30,7 @@ class MemberServiceTest {
     private MemberRepository memberRepository;
 
     @Mock
-    private MemberJpaRepository memberJpaRepository;
-
-    @AfterEach
-    void clean() {
-        memberJpaRepository.deleteAll();
-    }
+    MemberMapper memberMapper;
 
     @Test
     @DisplayName("Id를 통해 Member를 찾는다.")
@@ -49,14 +44,21 @@ class MemberServiceTest {
                                 .socialProvider(SocialProvider.valueOf("KAKAO"))
                                 .build())
                 .build();
+
+        MemberInfoResponse memberInfoResponse = MemberInfoResponse.builder()
+                .provider(SocialProvider.KAKAO)
+                .build();
+
         given(memberRepository.findById(id))
-                .willReturn(Optional.of(member));
+                .willReturn(Optional.ofNullable(member));
+        given(memberMapper.entityToMemberInfoResponse(member))
+                .willReturn(memberInfoResponse);
 
         //when
-        Member byId = memberService.findById(id);
+        MemberInfoResponse findResult = memberService.findMemberInfoResponseById(id);
 
         //then
-        assertThat(member).isEqualTo(byId);
+        assertThat(findResult).isEqualTo(memberInfoResponse);
     }
 
     @Test

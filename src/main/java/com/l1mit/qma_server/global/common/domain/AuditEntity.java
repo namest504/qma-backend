@@ -1,4 +1,4 @@
-package com.l1mit.qma_server.global.audit;
+package com.l1mit.qma_server.global.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
