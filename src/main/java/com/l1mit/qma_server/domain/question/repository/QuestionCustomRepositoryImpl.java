@@ -1,21 +1,24 @@
 package com.l1mit.qma_server.domain.question.repository;
 
 
-import static com.l1mit.qma_server.domain.question.QQuestion.question;
+import static com.l1mit.qma_server.domain.question.domain.QQuestion.question;
 
 import com.l1mit.qma_server.domain.member.domain.enums.mbti.Attitude;
 import com.l1mit.qma_server.domain.member.domain.enums.mbti.Decision;
 import com.l1mit.qma_server.domain.member.domain.enums.mbti.Lifestyle;
 import com.l1mit.qma_server.domain.member.domain.enums.mbti.Perception;
-import com.l1mit.qma_server.domain.question.dto.QuestionDetailResponse;
-import com.l1mit.qma_server.domain.question.dto.QuestionResponse;
-import com.l1mit.qma_server.domain.question.dto.QuestionSearchParam;
+import com.l1mit.qma_server.domain.question.dto.param.QuestionSearchParam;
+import com.l1mit.qma_server.domain.question.dto.response.QuestionDetailResponse;
+import com.l1mit.qma_server.domain.question.dto.response.QuestionResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
 
@@ -26,22 +29,31 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
     }
 
     @Override
-    public List<QuestionResponse> searchWithCondition(Pageable pageable,
+    public Page<QuestionResponse> searchWithCondition(Pageable pageable,
             QuestionSearchParam param) {
         BooleanBuilder builder = getBooleanBuilder(param);
 
-        return jpaQueryFactory.select(Projections.constructor(QuestionResponse.class,
-                        question.id.as("id"),
-                        question.member.nickname.as("writer"),
-                        question.receiveMbtiEntity.attitude.as("attitude"),
-                        question.receiveMbtiEntity.perception.as("perception"),
-                        question.receiveMbtiEntity.decision.as("decision"),
-                        question.receiveMbtiEntity.lifestyle.as("lifestyle"),
-                        question.auditEntity.createdAt.as("created_at")
-                ))
+        List<QuestionResponse> content = jpaQueryFactory.select(
+                        Projections.constructor(QuestionResponse.class,
+                                question.id.as("id"),
+                                question.member.nickname.as("writer"),
+                                question.receiveMbtiEntity.attitude.as("attitude"),
+                                question.receiveMbtiEntity.perception.as("perception"),
+                                question.receiveMbtiEntity.decision.as("decision"),
+                                question.receiveMbtiEntity.lifestyle.as("lifestyle"),
+                                question.auditEntity.createdAt.as("created_at")
+                        ))
                 .from(question)
                 .where(builder)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        JPAQuery<Long> countQuery = jpaQueryFactory.select(question.count())
+                .from(question)
+                .where(builder);
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.l1mit.qma_server.domain.member.domain;
 
 import com.l1mit.qma_server.domain.member.domain.enums.Role;
-import com.l1mit.qma_server.domain.question.Question;
+import com.l1mit.qma_server.domain.question.domain.Question;
 import com.l1mit.qma_server.global.common.domain.AuditEntity;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import jakarta.persistence.CollectionTable;

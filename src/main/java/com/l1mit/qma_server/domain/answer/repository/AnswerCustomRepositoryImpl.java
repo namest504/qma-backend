@@ -1,8 +1,9 @@
 package com.l1mit.qma_server.domain.answer.repository;
 
-import static com.l1mit.qma_server.domain.answer.QAnswer.answer;
 
-import com.l1mit.qma_server.domain.answer.dto.AnswerResponse;
+import static com.l1mit.qma_server.domain.answer.domain.QAnswer.answer;
+
+import com.l1mit.qma_server.domain.answer.dto.response.AnswerResponse;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;

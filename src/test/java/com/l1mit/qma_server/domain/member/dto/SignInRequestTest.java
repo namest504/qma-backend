@@ -2,6 +2,7 @@ package com.l1mit.qma_server.domain.member.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.l1mit.qma_server.domain.member.dto.request.SignInRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
