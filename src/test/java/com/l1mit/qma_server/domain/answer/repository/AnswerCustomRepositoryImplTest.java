@@ -3,13 +3,13 @@ package com.l1mit.qma_server.domain.answer.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.l1mit.qma_server.domain.answer.Answer;
-import com.l1mit.qma_server.domain.answer.dto.AnswerResponse;
+import com.l1mit.qma_server.domain.answer.domain.Answer;
+import com.l1mit.qma_server.domain.answer.dto.response.AnswerResponse;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
 import com.l1mit.qma_server.domain.member.repository.MemberRepository;
-import com.l1mit.qma_server.domain.question.Question;
+import com.l1mit.qma_server.domain.question.domain.Question;
 import com.l1mit.qma_server.domain.question.repository.QuestionRepository;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import com.l1mit.qma_server.setting.jpa.QueryDslConfig;

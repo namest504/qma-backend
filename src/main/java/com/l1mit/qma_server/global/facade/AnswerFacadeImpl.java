@@ -1,12 +1,12 @@
 package com.l1mit.qma_server.global.facade;
 
-import com.l1mit.qma_server.domain.answer.Answer;
-import com.l1mit.qma_server.domain.answer.AnswerMapper;
-import com.l1mit.qma_server.domain.answer.dto.AnswerRequest;
-import com.l1mit.qma_server.domain.member.MemberService;
+import com.l1mit.qma_server.domain.answer.domain.Answer;
+import com.l1mit.qma_server.domain.answer.dto.request.AnswerRequest;
+import com.l1mit.qma_server.domain.answer.mapper.AnswerMapper;
 import com.l1mit.qma_server.domain.member.domain.Member;
-import com.l1mit.qma_server.domain.question.Question;
-import com.l1mit.qma_server.domain.question.QuestionService;
+import com.l1mit.qma_server.domain.member.service.MemberService;
+import com.l1mit.qma_server.domain.question.domain.Question;
+import com.l1mit.qma_server.domain.question.service.QuestionService;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
 import org.springframework.stereotype.Component;

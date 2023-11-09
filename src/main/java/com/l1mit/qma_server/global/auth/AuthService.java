@@ -1,10 +1,10 @@
 package com.l1mit.qma_server.global.auth;
 
-import com.l1mit.qma_server.domain.member.MemberService;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
 import com.l1mit.qma_server.domain.member.dto.SignInRequest;
+import com.l1mit.qma_server.domain.member.service.MemberService;
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
 import com.l1mit.qma_server.global.auth.oauth.factory.SocialAuthServiceFactory;
 import com.l1mit.qma_server.global.auth.oauth.service.SocialAuthService;
