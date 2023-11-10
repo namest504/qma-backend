@@ -24,9 +24,7 @@ public class MemberService {
     }
 
     public MemberInfoResponse findMemberInfoResponseById(Long id) {
-        Member findedMember = memberRepository.findById(id)
-                .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
-        return memberMapper.entityToMemberInfoResponse(findedMember);
+        return memberMapper.entityToMemberInfoResponse(findById(id));
     }
 
     public Member findById(Long id) {
