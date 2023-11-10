@@ -18,13 +18,11 @@ import com.epages.restdocs.apispec.SimpleType;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
-import com.l1mit.qma_server.domain.question.domain.Question;
 import com.l1mit.qma_server.domain.question.dto.param.QuestionSearchParam;
 import com.l1mit.qma_server.domain.question.dto.request.QuestionRequest;
 import com.l1mit.qma_server.domain.question.dto.response.QuestionDetailResponse;
 import com.l1mit.qma_server.domain.question.dto.response.QuestionResponse;
 import com.l1mit.qma_server.domain.question.service.QuestionService;
-import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import com.l1mit.qma_server.setting.docs.RestDocsControllerTest;
 import java.time.LocalDate;
 import java.util.List;
@@ -130,19 +128,6 @@ class QuestionControllerTest extends RestDocsControllerTest {
                     .build();
 
             member.updateNickname("때지");
-
-            Question question = Question.builder()
-                    .member(member)
-                    .content("특정 상황에 대한 질문")
-                    .receiveMbtiEntity(
-                            MbtiEntity.builder()
-                                    .attitude("I")
-                                    .perception("S")
-                                    .decision("T")
-                                    .lifestyle("J")
-                                    .build()
-                    )
-                    .build();
 
             QuestionResponse questionResponse = QuestionResponse.builder()
                     .id(1L)
