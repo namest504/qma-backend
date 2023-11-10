@@ -3,7 +3,6 @@ package com.l1mit.qma_server.domain.question.controller;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-import com.l1mit.qma_server.domain.question.domain.Question;
 import com.l1mit.qma_server.domain.question.dto.param.QuestionSearchParam;
 import com.l1mit.qma_server.domain.question.dto.request.QuestionRequest;
 import com.l1mit.qma_server.domain.question.dto.response.QuestionDetailResponse;
@@ -38,7 +37,7 @@ public class QuestionController {
     @PostMapping
     public ResponseEntity<ApiResponse<?>> insert(@MemberId Long memberId,
             @RequestBody @Valid QuestionRequest questionRequest) {
-        final Question saved = questionService.save(memberId, questionRequest);
+        questionService.save(memberId, questionRequest);
         return ResponseEntity.status(NO_CONTENT)
                 .body(ApiResponse.createSuccess());
     }
