@@ -9,6 +9,7 @@ import com.l1mit.qma_server.domain.answer.service.AnswerService;
 import com.l1mit.qma_server.global.common.MemberId;
 import com.l1mit.qma_server.global.common.response.ApiResponse;
 import com.l1mit.qma_server.global.common.response.PageResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ public class AnswerController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<?>> create(@RequestBody AnswerRequest answerRequest,
+    public ResponseEntity<ApiResponse<?>> create(@RequestBody @Valid AnswerRequest answerRequest,
             @MemberId Long memberId) {
         answerService.create(answerRequest, memberId);
         return ResponseEntity.status(NO_CONTENT)

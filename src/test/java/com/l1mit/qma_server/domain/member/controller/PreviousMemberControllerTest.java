@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.l1mit.qma_server.domain.member.dto.SignInRequest;
+import com.l1mit.qma_server.domain.member.dto.request.SignInRequest;
 import com.l1mit.qma_server.domain.member.service.MemberService;
 import com.l1mit.qma_server.global.auth.AuthService;
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;

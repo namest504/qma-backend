@@ -3,7 +3,7 @@ package com.l1mit.qma_server.domain.member.service;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
-import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
+import com.l1mit.qma_server.domain.member.dto.response.MemberInfoResponse;
 import com.l1mit.qma_server.domain.member.mapper.MemberMapper;
 import com.l1mit.qma_server.domain.member.repository.MemberRepository;
 import com.l1mit.qma_server.global.exception.ErrorCode;
@@ -24,9 +24,7 @@ public class MemberService {
     }
 
     public MemberInfoResponse findMemberInfoResponseById(Long id) {
-        Member findedMember = memberRepository.findById(id)
-                .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
-        return memberMapper.entityToMemberInfoResponse(findedMember);
+        return memberMapper.entityToMemberInfoResponse(findById(id));
     }
 
     public Member findById(Long id) {

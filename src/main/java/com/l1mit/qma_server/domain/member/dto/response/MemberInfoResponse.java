@@ -1,4 +1,4 @@
-package com.l1mit.qma_server.domain.member.dto;
+package com.l1mit.qma_server.domain.member.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;

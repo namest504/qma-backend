@@ -1,0 +1,68 @@
+package com.l1mit.qma_server.domain.question.dto.request;
+
+import static com.l1mit.qma_server.global.constants.RequestValidationConstants.QUESTION_CONTENT_NOT_BLANK;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.l1mit.qma_server.setting.validation.ValidationTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+
+class QuestionRequestTest extends ValidationTest {
+
+    @ParameterizedTest
+    @CsvSource(value = {"질문 내용:E:N:T:J"}, delimiter = ':')
+    @DisplayName("정상적으로 처리한다.")
+    void success(
+            String content,
+            String attitude,
+            String perception,
+            String decision,
+            String lifestyle) {
+
+        QuestionRequest questionRequest = QuestionRequest.builder()
+                .content(content)
+                .attitude(attitude)
+                .perception(perception)
+                .decision(decision)
+                .lifestyle(lifestyle)
+                .build();
+
+        assertThat(getConstraintViolations(questionRequest)).isEmpty();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("질문 내용이 비어있는 문자열이 들어오면 처리한다.")
+    void fail_NullOrBlank(String content) {
+        QuestionRequest questionRequest = QuestionRequest.builder()
+                .content(content)
+                .attitude("E")
+                .perception("N")
+                .decision("T")
+                .lifestyle("P")
+                .build();
+
+        assertThat(getConstraintViolations(questionRequest).stream()
+                .anyMatch(v -> v.getMessage().equals(QUESTION_CONTENT_NOT_BLANK)))
+                .isTrue();
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"A:N:T:P", "E:Q:T:P", "E:N:R:P", "E:N:T:U", "Q:S:T:P"}, delimiter = ':')
+    @DisplayName("MBTI가 올바르지 않은 문자열이 들어오면 처리한다.")
+    void fail_NullOrBlank(String attitude, String perception, String decision, String lifestyle) {
+        QuestionRequest questionRequest = QuestionRequest.builder()
+                .content("content")
+                .attitude(attitude)
+                .perception(perception)
+                .decision(decision)
+                .lifestyle(lifestyle)
+                .build();
+
+        assertThat(getConstraintViolations(questionRequest).stream()
+                .allMatch(v -> v.getMessage().contains("를 입력해주세요")))
+                .isTrue();
+    }
+}

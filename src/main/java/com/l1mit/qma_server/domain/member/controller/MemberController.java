@@ -1,7 +1,7 @@
 package com.l1mit.qma_server.domain.member.controller;
 
-import com.l1mit.qma_server.domain.member.dto.MemberInfoResponse;
-import com.l1mit.qma_server.domain.member.dto.SignInRequest;
+import com.l1mit.qma_server.domain.member.dto.request.SignInRequest;
+import com.l1mit.qma_server.domain.member.dto.response.MemberInfoResponse;
 import com.l1mit.qma_server.domain.member.service.MemberService;
 import com.l1mit.qma_server.global.auth.AuthService;
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;

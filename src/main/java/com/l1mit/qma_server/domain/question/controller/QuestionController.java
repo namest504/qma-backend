@@ -3,7 +3,6 @@ package com.l1mit.qma_server.domain.question.controller;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-import com.l1mit.qma_server.domain.question.domain.Question;
 import com.l1mit.qma_server.domain.question.dto.param.QuestionSearchParam;
 import com.l1mit.qma_server.domain.question.dto.request.QuestionRequest;
 import com.l1mit.qma_server.domain.question.dto.response.QuestionDetailResponse;
@@ -12,6 +11,7 @@ import com.l1mit.qma_server.domain.question.service.QuestionService;
 import com.l1mit.qma_server.global.common.MemberId;
 import com.l1mit.qma_server.global.common.response.ApiResponse;
 import com.l1mit.qma_server.global.common.response.PageResponse;
+import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,8 +36,8 @@ public class QuestionController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<?>> insert(@MemberId Long memberId,
-            @RequestBody QuestionRequest questionRequest) {
-        final Question saved = questionService.save(memberId, questionRequest);
+            @RequestBody @Valid QuestionRequest questionRequest) {
+        questionService.save(memberId, questionRequest);
         return ResponseEntity.status(NO_CONTENT)
                 .body(ApiResponse.createSuccess());
     }
