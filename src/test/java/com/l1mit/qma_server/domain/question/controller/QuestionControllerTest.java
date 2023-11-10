@@ -57,8 +57,8 @@ class QuestionControllerTest extends RestDocsControllerTest {
                     .content("질문 내용")
                     .attitude("E")
                     .perception("N")
-                    .lifestyle("F")
-                    .decision("P")
+                    .decision("F")
+                    .lifestyle("P")
                     .build();
 
             //when
