@@ -29,22 +29,25 @@ class GoogleRequesterTest {
             "    \"token_type\": \"bearer\",\n" +
             "    \"id_token\": \"ID_TOKEN_AT_HERE\"\n" +
             "}";
-    private final String PUBLIC_KEY_RESPONSE = "{\n"
-            + "      \"e\": \"AQAB\",\n"
-            + "      \"kty\": \"RSA\",\n"
-            + "      \"use\": \"sig\",\n"
-            + "      \"n\": \"keFudaSl4KpJ2xC-fIGOb4eD4hwmCVF3eWxginhvrcLNx3ygDjcN7wGRC-CkzJ12ymBGsTPnSBiTFTpwpa5LXEYi-wvN-RkwA8eptcFXIzCXn1k9TqFxaPfw5Qv8N2hj0ZnFR5KPMr1bgK8vktlBu_VbptXr9IKtUEpV0hQCMjmc0JAS61ZIgx9XhPWaRbuYUvmBVLN3ButKAoWqUuzdlP1arjC1R8bUWek3xKUuSSJmZ9oHIGU5omtTEgXRDiv442R3tle-gLcfcr57uPnaAh9bIgBJRZw2mjqP8uBZurq6YkuyUDFQb8NFkBxHigoEdE7di_OtEef2GFNLseE6mw\",\n"
-            + "      \"kid\": \"7d334497506acb74cdeedaa66184d15547f83693\",\n"
-            + "      \"alg\": \"RS256\"\n"
-            + "    },\n"
-            + "    {\n"
-            + "      \"alg\": \"RS256\",\n"
-            + "      \"kty\": \"RSA\",\n"
-            + "      \"use\": \"sig\",\n"
-            + "      \"kid\": \"a06af0b68a2119d692cac4abf415ff3788136f65\",\n"
-            + "      \"n\": \"yrIpMnHYrVPwlbC-IY8aU2Q6QKnLf_p1FQXNiTO9mWFdeYXP4cNF6QKWgy4jbVSrOs-4qLZbKwRvZhfTuuKW6fwj5lVZcNsq5dd6GXR65I8kwomMH-Zv_pDt9zLiiJCp5_GU6Klb8zMY_jEE1fZp88HIk2ci4GrmtPTbw8LHAkn0P54sQQqmCtzqAWp8qkZ-GGNITxMIdQMY225kX7Dx91ruCb26jPCvF5uOrHT-I6rFU9fZbIgn4T9PthruubbUCutKIR-JK8B7djf61f8ETuKomaHVbCcxA-Q7xD0DEJzeRMqiPrlb9nJszZjmp_VsChoQQg-wl0jFP-1Rygsx9w\",\n"
-            + "      \"e\": \"AQAB\"\n"
-            + "    }";
+    private final String PUBLIC_KEY_RESPONSE = "{"
+            + " \"keys\": ["
+            + "{"
+            + "  \"e\": \"AQAB\","
+            + "  \"kty\": \"RSA\","
+            + "  \"use\": \"sig\","
+            + "  \"n\": \"keFudaSl4KpJ2xC-fIGOb4eD4hwmCVF3eWxginhvrcLNx3ygDjcN7wGRC-CkzJ12ymBGsTPnSBiTFTpwpa5LXEYi-wvN-RkwA8eptcFXIzCXn1k9TqFxaPfw5Qv8N2hj0ZnFR5KPMr1bgK8vktlBu_VbptXr9IKtUEpV0hQCMjmc0JAS61ZIgx9XhPWaRbuYUvmBVLN3ButKAoWqUuzdlP1arjC1R8bUWek3xKUuSSJmZ9oHIGU5omtTEgXRDiv442R3tle-gLcfcr57uPnaAh9bIgBJRZw2mjqP8uBZurq6YkuyUDFQb8NFkBxHigoEdE7di_OtEef2GFNLseE6mw\","
+            + "  \"kid\": \"7d334497506acb74cdeedaa66184d15547f83693\","
+            + "  \"alg\": \"RS256\""
+            + "},"
+            + "{"
+            + "  \"alg\": \"RS256\","
+            + "  \"kty\": \"RSA\","
+            + "  \"use\": \"sig\","
+            + "  \"kid\": \"a06af0b68a2119d692cac4abf415ff3788136f65\","
+            + "  \"n\": \"yrIpMnHYrVPwlbC-IY8aU2Q6QKnLf_p1FQXNiTO9mWFdeYXP4cNF6QKWgy4jbVSrOs-4qLZbKwRvZhfTuuKW6fwj5lVZcNsq5dd6GXR65I8kwomMH-Zv_pDt9zLiiJCp5_GU6Klb8zMY_jEE1fZp88HIk2ci4GrmtPTbw8LHAkn0P54sQQqmCtzqAWp8qkZ-GGNITxMIdQMY225kX7Dx91ruCb26jPCvF5uOrHT-I6rFU9fZbIgn4T9PthruubbUCutKIR-JK8B7djf61f8ETuKomaHVbCcxA-Q7xD0DEJzeRMqiPrlb9nJszZjmp_VsChoQQg-wl0jFP-1Rygsx9w\","
+            + "  \"e\": \"AQAB\""
+            + "}"
+            + "]}";
 
     @BeforeEach
     void setUp() throws IOException {

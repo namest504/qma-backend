@@ -12,3 +12,25 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate.ddl-auto: create-drop
+
+oauth2:
+  kakao:
+    api-key: kakaoapikey
+    token-api-url: https://kauth.kakao.com/oauth/token
+    public-key-info: https://kauth.kakao.com/.well-known/jwks.json
+  apple:
+    api-key: appleapikey
+    token-api-url: https://appleid.apple.com/auth/token
+    public-key-info: https://appleid.apple.com/auth/keys
+  google:
+    api-key: googleapikey
+    client-secret: googleclientsecret
+    token-api-url: https://oauth2.googleapis.com/token
+    public-key-info: https://www.googleapis.com/oauth2/v3/certs
+
+redis:
+  host: localhost
+  port: 6379
+
+jwt:
+  secret: dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleQ==

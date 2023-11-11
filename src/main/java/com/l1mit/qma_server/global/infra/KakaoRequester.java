@@ -6,6 +6,7 @@ import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -53,6 +54,7 @@ public class KakaoRequester implements OauthAPIRequester {
     }
 
     @Override
+    @Cacheable(cacheNames = "kakao")
     public OidcPublicKeyResponse getPublicKeys() {
         return webclient.get()
                 .uri(KAKAO_PUBLIC_KEY_INFO)
