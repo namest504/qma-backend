@@ -5,6 +5,7 @@ import com.l1mit.qma_server.global.auth.oauth.key.OidcPublicKeyResponse;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -51,6 +52,7 @@ public class AppleRequester implements OauthAPIRequester {
     }
 
     @Override
+    @Cacheable(cacheNames = "apple")
     public OidcPublicKeyResponse getPublicKeys() {
         return webclient.get()
                 .uri(APPLE_PUBLIC_KEY_INFO)
