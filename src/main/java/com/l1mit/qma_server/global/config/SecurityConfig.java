@@ -1,7 +1,10 @@
 package com.l1mit.qma_server.global.config;
 
+import static org.springframework.http.HttpMethod.POST;
+
 import com.l1mit.qma_server.global.filter.JwtAuthenticationEntryPoint;
 import com.l1mit.qma_server.global.filter.JwtAuthenticationFilter;
+import java.util.stream.Stream;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -50,12 +53,36 @@ public class SecurityConfig {
 
     private Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> setAuthorizeHttpRequests() {
         return requests ->
-                requests.requestMatchers(new AntPathRequestMatcher("/api/v1/auth/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**",
-                                "/swagger-resources/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/docs/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/**")).authenticated();
+                requests.requestMatchers(Stream.of(PERMIT_PATTERNS)
+                                .map(AntPathRequestMatcher::antMatcher)
+                                .toArray(AntPathRequestMatcher[]::new))
+                        .permitAll()
+
+                        .requestMatchers(Stream.of(HAS_ANY_ROLE_PATTERNS)
+                                .map(AntPathRequestMatcher::antMatcher)
+                                .toArray(AntPathRequestMatcher[]::new))
+                        .hasAnyRole("MEMBER", "ADMIN")
+
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/question", POST.name()))
+                        .hasAnyRole("MEMBER", "ADMIN")
+
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/answer", POST.name()))
+                        .hasAnyRole("MEMBER", "ADMIN")
+
+                        .requestMatchers(new AntPathRequestMatcher("/**"))
+                        .authenticated();
     }
+
+    private static final String[] PERMIT_PATTERNS = new String[]{
+            "/api/v1/**",
+            "/h2-console/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/v3/api-docs/**",
+            "/docs/**"
+    };
+
+    private static final String[] HAS_ANY_ROLE_PATTERNS = new String[]{
+            "/api/v1/auth/my-info",
+    };
 }
