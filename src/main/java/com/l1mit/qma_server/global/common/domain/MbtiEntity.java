@@ -1,9 +1,5 @@
 package com.l1mit.qma_server.global.common.domain;
 
-import com.l1mit.qma_server.domain.member.domain.enums.mbti.Attitude;
-import com.l1mit.qma_server.domain.member.domain.enums.mbti.Decision;
-import com.l1mit.qma_server.domain.member.domain.enums.mbti.Lifestyle;
-import com.l1mit.qma_server.domain.member.domain.enums.mbti.Perception;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -19,30 +15,11 @@ import lombok.NoArgsConstructor;
 public class MbtiEntity {
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "attitude")
-    private Attitude attitude;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "perception")
-    private Perception perception;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "decision")
-    private Decision decision;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "lifestyle")
-    private Lifestyle lifestyle;
+    @Column(name = "mbti")
+    private MBTI mbti;
 
     @Builder
-    public MbtiEntity(
-            final String attitude,
-            final String perception,
-            final String decision,
-            final String lifestyle) {
-        this.attitude = Attitude.valueOf(attitude);
-        this.perception = Perception.valueOf(perception);
-        this.decision = Decision.valueOf(decision);
-        this.lifestyle = Lifestyle.valueOf(lifestyle);
+    public MbtiEntity(MBTI mbti) {
+        this.mbti = mbti;
     }
 }
