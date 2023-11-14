@@ -3,6 +3,7 @@ package com.l1mit.qma_server.domain.question.mapper;
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.question.domain.Question;
 import com.l1mit.qma_server.domain.question.dto.request.QuestionRequest;
+import com.l1mit.qma_server.global.common.domain.MBTI;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import org.springframework.stereotype.Component;
 
@@ -14,10 +15,7 @@ public class QuestionMapper {
                 .member(member)
                 .content(request.content())
                 .receiveMbtiEntity(MbtiEntity.builder()
-                        .attitude(request.attitude())
-                        .perception(request.perception())
-                        .decision(request.decision())
-                        .lifestyle(request.lifestyle())
+                        .mbti(MBTI.valueOf(request.mbti()))
                         .build())
                 .build();
     }

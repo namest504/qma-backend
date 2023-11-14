@@ -1,6 +1,10 @@
 package com.l1mit.qma_server.domain.question.dto.param;
 
+import static com.l1mit.qma_server.global.constants.RegexpConstants.REGEXP_MBTI;
+import static com.l1mit.qma_server.global.constants.RequestValidationConstants.MBTI_MISMATCH;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Pattern;
 import java.time.LocalDate;
 import lombok.Builder;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,29 +13,12 @@ public record QuestionSearchParam(
         @JsonProperty("writer")
         String writer,
 
-        @JsonProperty("send_attitude")
-        String sendAttitude,
+        @JsonProperty("send_mbti")
+        @Pattern(regexp = REGEXP_MBTI, message = MBTI_MISMATCH)
+        String sendMbti,
 
-        @JsonProperty("send_perception")
-        String sendPerception,
-
-        @JsonProperty("send_decision")
-        String sendDecision,
-
-        @JsonProperty("send_lifestyle")
-        String sendLifestyle,
-
-        @JsonProperty("receive_attitude")
-        String receiveAttitude,
-
-        @JsonProperty("receive_perception")
-        String receivePerception,
-
-        @JsonProperty("receive_decision")
-        String receiveDecision,
-
-        @JsonProperty("receive_lifestyle")
-        String receiveLifestyle,
+        @JsonProperty("receive_mbti")
+        String receiveMbti,
 
         @JsonProperty("start_time")
         @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -42,7 +29,7 @@ public record QuestionSearchParam(
         LocalDate endTime
 ) {
 
-        @Builder
-        public QuestionSearchParam {
-        }
+    @Builder
+    public QuestionSearchParam {
+    }
 }
