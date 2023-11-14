@@ -13,6 +13,7 @@ import com.l1mit.qma_server.domain.question.dto.request.QuestionRequest;
 import com.l1mit.qma_server.domain.question.dto.response.QuestionDetailResponse;
 import com.l1mit.qma_server.domain.question.dto.response.QuestionResponse;
 import com.l1mit.qma_server.domain.question.repository.QuestionRepository;
+import com.l1mit.qma_server.global.common.domain.MBTI;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
@@ -54,15 +55,12 @@ class QuestionServiceTest {
             Long memberId = 1L;
             QuestionRequest questionRequest = QuestionRequest.builder()
                     .content("질문 내용")
-                    .attitude("E")
-                    .perception("N")
-                    .decision("T")
-                    .lifestyle("P")
+                    .mbti("ENTP")
                     .build();
 
             Oauth2Entity oauth2Entity = getOauth2Entity("123", SocialProvider.KAKAO);
             Member member = getMember(oauth2Entity);
-            MbtiEntity mbtiEntity = getMbtiEntity("E", "N", "T", "P");
+            MbtiEntity mbtiEntity = getMbtiEntity("ENTP");
 
             Question question = getQuestion(member, mbtiEntity, "질문 내용");
 
@@ -92,13 +90,13 @@ class QuestionServiceTest {
             QuestionSearchParam param = QuestionSearchParam.builder()
                     .build();
             QuestionResponse questionResponse1 = getQuestionResponse(
-                    1L, "질문자", "E", "N", "T", "P",
+                    1L, "질문자", "ENTP",
                     LocalDateTime.of(2023, 11, 1, 1, 14, 23));
             QuestionResponse questionResponse2 = getQuestionResponse(
-                    2L, "질문자", "E", "N", "T", "P",
+                    2L, "질문자", "ENTP",
                     LocalDateTime.of(2023, 11, 1, 1, 14, 23));
             QuestionResponse questionResponse3 = getQuestionResponse(
-                    3L, "질문자", "E", "N", "T", "P",
+                    3L, "질문자", "ENTP",
                     LocalDateTime.of(2023, 11, 1, 1, 14, 23));
 
             List<QuestionResponse> responseList = List.of(questionResponse1,
@@ -132,10 +130,11 @@ class QuestionServiceTest {
             Long questionId = 1L;
             QuestionDetailResponse questionDetailResponse = QuestionDetailResponse.builder()
                     .writer("질문자")
-                    .attitude("E")
+                    .mbti(MBTI.ENTP)
+                    /*.attitude("E")
                     .perception("N")
                     .decision("T")
-                    .lifestyle("P")
+                    .lifestyle("P")*/
                     .content("질문 내용")
                     .createdAt(LocalDateTime.of(2023, 11, 1, 1, 14, 23))
                     .build();
@@ -176,7 +175,7 @@ class QuestionServiceTest {
             Long questionId = 1L;
             Question question = getQuestion(
                     getMember(getOauth2Entity("123", SocialProvider.KAKAO))
-                    , getMbtiEntity("E", "N", "T", "P")
+                    , getMbtiEntity("ENTP")
                     , "질문 내용");
             given(questionRepository.findById(questionId))
                     .willReturn(Optional.ofNullable(question));
@@ -190,7 +189,7 @@ class QuestionServiceTest {
 
         @Test
         @DisplayName("존재하지 않는 질문이면 예외를 발생시킨다.")
-        void fail_Null() throws Exception {
+        void fail_Null() {
             //given
             Long questionId = 1L;
 
@@ -220,15 +219,9 @@ class QuestionServiceTest {
     }
 
     private MbtiEntity getMbtiEntity(
-            String attitude,
-            String perception,
-            String decision,
-            String lifestyle) {
+            String mbti) {
         MbtiEntity mbtiEntity = MbtiEntity.builder()
-                .attitude(attitude)
-                .perception(perception)
-                .decision(decision)
-                .lifestyle(lifestyle)
+                .mbti(MBTI.valueOf(mbti))
                 .build();
         return mbtiEntity;
     }
@@ -244,19 +237,17 @@ class QuestionServiceTest {
     private QuestionResponse getQuestionResponse(
             Long id,
             String writer,
-            String attitude,
-            String perception,
-            String decision,
-            String lifestyle,
+            String mbti,
             LocalDateTime createdAt) {
         return QuestionResponse.builder()
                 .id(id)
                 .writer(writer)
-                .attitude(attitude)
+                .mbti(MBTI.valueOf(mbti))
+                /*.attitude(attitude)
                 .perception(perception)
                 .decision(decision)
-                .lifestyle(lifestyle)
-                .createdAt(createdAt)
+                .lifestyle(lifestyle)*/
+//                .createdAt(createdAt)
                 .build();
     }
 }

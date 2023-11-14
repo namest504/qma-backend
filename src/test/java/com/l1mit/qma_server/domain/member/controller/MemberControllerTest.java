@@ -22,6 +22,7 @@ import com.l1mit.qma_server.domain.member.dto.response.MemberInfoResponse;
 import com.l1mit.qma_server.domain.member.service.MemberService;
 import com.l1mit.qma_server.global.auth.AuthService;
 import com.l1mit.qma_server.global.auth.oauth.dto.IdTokenResponse;
+import com.l1mit.qma_server.global.common.domain.MBTI;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
@@ -173,12 +174,7 @@ public class MemberControllerTest extends RestDocsControllerTest {
             Long memberId = 1L;
             MemberInfoResponse memberInfoResponse = MemberInfoResponse.builder()
                     .provider(SocialProvider.KAKAO)
-                    .mbtiEntity(MbtiEntity.builder()
-                            .attitude("I")
-                            .perception("S")
-                            .decision("T")
-                            .lifestyle("J")
-                            .build())
+                    .mbtiEntity(getMbtiEntity("ISTJ"))
                     .build();
 
             given(memberService.findMemberInfoResponseById(memberId)).willReturn(
@@ -214,18 +210,9 @@ public class MemberControllerTest extends RestDocsControllerTest {
                                                     fieldWithPath("data.mbti").type(
                                                                     JsonFieldType.OBJECT)
                                                             .description("유저의 mbti"),
-                                                    fieldWithPath("data.mbti.attitude").type(
+                                                    fieldWithPath("data.mbti.mbti").type(
                                                                     JsonFieldType.STRING)
-                                                            .description("I, E"),
-                                                    fieldWithPath("data.mbti.perception").type(
-                                                                    JsonFieldType.STRING)
-                                                            .description("S, N"),
-                                                    fieldWithPath("data.mbti.decision").type(
-                                                                    JsonFieldType.STRING)
-                                                            .description("T, F"),
-                                                    fieldWithPath("data.mbti.lifestyle").type(
-                                                                    JsonFieldType.STRING)
-                                                            .description("P, J"),
+                                                            .description("mbti 값"),
                                                     fieldWithPath("message").type(
                                                                     JsonFieldType.NULL)
                                                             .description("오류 메세지"),
@@ -233,12 +220,22 @@ public class MemberControllerTest extends RestDocsControllerTest {
                                                                     JsonFieldType.STRING)
                                                             .description("타임 스탬프")
                                             )
-                                            .responseSchema(Schema.schema("MemberInfoResponse"))
-                                            .build()
-                                    )
+                                    .responseSchema(Schema.schema("MemberInfoResponse"))
+                                    .build()
+                            )
                             )
                     );
         }
+    }
+
+    private static MbtiEntity getMbtiEntity(String mbti) {
+        return MbtiEntity.builder()
+                .mbti(MBTI.valueOf(mbti))
+                /*.attitude("I")
+                .perception("S")
+                .decision("T")
+                .lifestyle("J")*/
+                .build();
     }
 
 

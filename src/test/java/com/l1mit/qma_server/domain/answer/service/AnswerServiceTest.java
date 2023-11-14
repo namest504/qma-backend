@@ -13,6 +13,7 @@ import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
 import com.l1mit.qma_server.domain.question.domain.Question;
+import com.l1mit.qma_server.global.common.domain.MBTI;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import com.l1mit.qma_server.global.facade.AnswerFacade;
 import java.time.LocalDateTime;
@@ -44,7 +45,7 @@ class AnswerServiceTest {
 
         @Test
         @DisplayName("성공한다.")
-        void success() throws Exception {
+        void success() {
             //given
             Long memberId = 1L;
             AnswerRequest answerRequest = AnswerRequest.builder()
@@ -56,7 +57,7 @@ class AnswerServiceTest {
             Answer answer = getAnswer(
                     member,
                     getQuestion(member,
-                            getMbtiEntity("E", "N", "T", "P"),
+                            getMbtiEntity("ENTP"),
                             "질문 내용"
                     ));
             given(answerFacade.create(answerRequest, memberId))
@@ -77,7 +78,7 @@ class AnswerServiceTest {
 
         @Test
         @DisplayName("성공한다.")
-        void success() throws Exception {
+        void success() {
             //given
             int pageNumber = 0;
             int pageSize = 10;
@@ -134,16 +135,9 @@ class AnswerServiceTest {
                 .build();
     }
 
-    private MbtiEntity getMbtiEntity(
-            String attitude,
-            String perception,
-            String decision,
-            String lifestyle) {
+    private MbtiEntity getMbtiEntity(String mbti) {
         return MbtiEntity.builder()
-                .attitude(attitude)
-                .perception(perception)
-                .decision(decision)
-                .lifestyle(lifestyle)
+                .mbti(MBTI.valueOf(mbti))
                 .build();
     }
 
