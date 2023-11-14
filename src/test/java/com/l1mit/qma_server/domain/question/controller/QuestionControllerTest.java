@@ -3,6 +3,7 @@ package com.l1mit.qma_server.domain.question.controller;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -23,16 +24,21 @@ import com.l1mit.qma_server.domain.question.dto.request.QuestionRequest;
 import com.l1mit.qma_server.domain.question.dto.response.QuestionDetailResponse;
 import com.l1mit.qma_server.domain.question.dto.response.QuestionResponse;
 import com.l1mit.qma_server.domain.question.service.QuestionService;
+import com.l1mit.qma_server.global.common.domain.MBTI;
+import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import com.l1mit.qma_server.setting.docs.RestDocsControllerTest;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
@@ -53,10 +59,7 @@ class QuestionControllerTest extends RestDocsControllerTest {
             //given
             QuestionRequest questionRequest = QuestionRequest.builder()
                     .content("질문 내용")
-                    .attitude("E")
-                    .perception("N")
-                    .decision("F")
-                    .lifestyle("P")
+                    .mbti("ENTP")
                     .build();
 
             //when
@@ -68,18 +71,15 @@ class QuestionControllerTest extends RestDocsControllerTest {
             resultActions
                     .andExpect(status().isNoContent())
                     .andDo(document("question-create",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            resource(ResourceSnippetParameters.builder()
-                                    .tag("질문")
-                                    .summary("업로드")
-                                    .description("질문을 업로드 하는 API")
-                                    .requestFields(
-                                            fieldWithPath("content").description("질문 내용"),
-                                            fieldWithPath("attitude").description("E, I"),
-                                            fieldWithPath("perception").description("N, S"),
-                                                    fieldWithPath("decision").description("T, F"),
-                                                    fieldWithPath("lifestyle").description("P, J")
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    resource(ResourceSnippetParameters.builder()
+                                            .tag("질문")
+                                            .summary("업로드")
+                                            .description("질문을 업로드 하는 API")
+                                            .requestFields(
+                                                    fieldWithPath("content").description("질문 내용"),
+                                                    fieldWithPath("mbti").description("MBTI")
                                             )
                                             .responseFields(
                                                     fieldWithPath("data").description("응답 데이터"),
@@ -98,66 +98,131 @@ class QuestionControllerTest extends RestDocsControllerTest {
     class search {
 
         @Test
-        @DisplayName("성공한다")
+        @DisplayName("글쓴이만 조회해서 성공한다")
         void success() throws Exception {
             //given
             int pageNumber = 0;
             int pageSize = 10;
 
             QuestionSearchParam questionSearchParam = QuestionSearchParam.builder()
-                    .writer("때지")
-                    .sendAttitude("E")
-                    .sendPerception("N")
-                    .sendDecision("F")
-                    .sendLifestyle("P")
-                    .receiveAttitude("I")
-                    .receivePerception("S")
-                    .receiveDecision("T")
-                    .receiveLifestyle("J")
-                    .startTime(LocalDate.of(2023, 11, 1))
-                    .endTime(LocalDate.of(2023, 11, 3))
-                    .build();
-
-            Oauth2Entity oauth2Entity = Oauth2Entity.builder()
-                    .accountId("1")
-                    .socialProvider(SocialProvider.KAKAO)
-                    .build();
-
-            Member member = Member.builder()
-                    .oauth2Entity(oauth2Entity)
-                    .build();
-
-            member.updateNickname("때지");
-
-            QuestionResponse questionResponse = QuestionResponse.builder()
-                    .id(1L)
                     .writer("글쓴이")
-                    .attitude("I")
-                    .perception("S")
-                    .decision("T")
-                    .lifestyle("J")
-                    .createdAt(LocalDate.of(2023, 11, 2).atStartOfDay())
                     .build();
+
+            Member member = getMember(getOauth2Entity("1", SocialProvider.KAKAO));
+            member.updateMbtiEntity(getMbtiEntity("ENFP"));
+            member.updateNickname("글쓴이");
+
+            QuestionResponse questionResponse1 = getQuestionResponse(1L, "글쓴이", "ISTJ", LocalDateTime.of(2023, 11, 2, 7, 23, 2));
+            QuestionResponse questionResponse2 = getQuestionResponse(2L, "글쓴이이", "ENTP", LocalDateTime.of(2023, 11, 3, 16, 14, 2));
+            QuestionResponse questionResponse3 = getQuestionResponse(3L, "글글쓴이", "ISFP", LocalDateTime.of(2023, 11, 4, 2, 23, 2));
+
+            List<QuestionResponse> questionResponses = List.of(questionResponse1, questionResponse2, questionResponse3);
 
             PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 
             given(questionService.searchWithCondition(pageRequest, questionSearchParam))
-                    .willReturn(new PageImpl<>(List.of(questionResponse), pageRequest, 1));
+                    .willReturn(PageableExecutionUtils.getPage(questionResponses, pageRequest, questionResponses::size));
             //when
             ResultActions resultActions = mockMvc.perform(get("/api/v1/question/search")
                     .queryParam("page", String.valueOf(pageRequest.getPageNumber()))
                     .queryParam("size", String.valueOf(pageRequest.getPageSize()))
                     .queryParam("writer", questionSearchParam.writer())
-                    .queryParam("sendAttitude", questionSearchParam.sendAttitude())
-                    .queryParam("sendPerception", questionSearchParam.sendPerception())
-                    .queryParam("sendDecision", questionSearchParam.sendDecision())
-                    .queryParam("sendLifestyle", questionSearchParam.sendLifestyle())
-                    .queryParam("receiveAttitude", questionSearchParam.receiveAttitude())
-                    .queryParam("receivePerception", questionSearchParam.receivePerception())
-                    .queryParam("receiveDecision", questionSearchParam.receiveDecision())
-                    .queryParam("receiveLifestyle", questionSearchParam.receiveLifestyle())
-                    .queryParam("startTime", questionSearchParam.startTime().toString())
-                    .queryParam("endTime", questionSearchParam.endTime().toString())
+                    .queryParam("send_mbti", questionSearchParam.sendMbti())
+                    .queryParam("receive_mbti", questionSearchParam.receiveMbti())
+                    .queryParam("start_time", String.valueOf(questionSearchParam.startTime()))
+                    .queryParam("end_time", String.valueOf(questionSearchParam.endTime()))
+                    .contentType(MediaType.APPLICATION_JSON));
+
+            //then
+            resultActions
+                    .andExpect(status().isOk())
+                    .andDo(document("question-search",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    resource(ResourceSnippetParameters.builder()
+                                            .tag("질문")
+                                            .summary("조회")
+                                            .description("질문을 조건에 따라 검색 하는 API")
+                                            .queryParameters(
+                                                    parameterWithName("page").optional().type(SimpleType.NUMBER).defaultValue(0)
+                                                            .description("페이지 번호"),
+                                                    parameterWithName("size").optional().type(SimpleType.NUMBER).defaultValue(10)
+                                                            .description("페이지 크기"),
+                                                    parameterWithName("writer").optional().type(SimpleType.STRING)
+                                                            .description("작성자"),
+                                                    parameterWithName("send_mbti").optional().type(SimpleType.STRING)
+                                                            .description("작성자 MBTI"),
+                                                    parameterWithName("receive_mbti").optional().type(SimpleType.STRING)
+                                                            .description("작성자 MBTI"),
+                                                    parameterWithName("start_time").optional().type(SimpleType.STRING)
+                                                            .description("검색 시작 날짜"),
+                                                    parameterWithName("end_time").optional().type(SimpleType.STRING)
+                                                            .description("검색 종료 날짜")
+                                            )
+                                            .responseFields(
+                                                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                                                            .description("응답 데이터"),
+                                                    fieldWithPath("data.content").type(JsonFieldType.ARRAY)
+                                                            .description("페이지 데이터"),
+                                                    fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
+                                                            .description("질문 번호"),
+                                                    fieldWithPath("data.content[].writer").type(JsonFieldType.STRING)
+                                                            .description("작성자"),
+                                                    fieldWithPath("data.content[].mbti").type(JsonFieldType.STRING)
+                                                            .description("질문 대상 MBTI"),
+                                                    fieldWithPath("data.content[].created_at").type(JsonFieldType.STRING)
+                                                            .description("작성일"),
+                                                    fieldWithPath("data.totalElement").type(JsonFieldType.NUMBER)
+                                                            .description("전체 질문 개수"),
+                                                    fieldWithPath("data.totalPage").type(JsonFieldType.NUMBER)
+                                                            .description("전체 페이지 수"),
+                                                    fieldWithPath("message").type(JsonFieldType.NULL)
+                                                            .description("오류 메세지"),
+                                                    fieldWithPath("timestamp").type(JsonFieldType.STRING)
+                                                            .description("응답 시간")
+
+                                            )
+                                            .responseSchema(Schema.schema("QuestionResponse"))
+                                            .build()
+                                    )
+                            )
+                    );
+        }
+
+        @Test
+        @DisplayName("대상 MBTI만 조회해서 성공한다")
+        void success_receiveMBTI() throws Exception {
+            //given
+            int pageNumber = 0;
+            int pageSize = 10;
+
+            QuestionSearchParam questionSearchParam = QuestionSearchParam.builder()
+                    .writer("글쓴이")
+                    .receiveMbti("ISTJ")
+                    .build();
+
+            Member member = getMember(getOauth2Entity("1", SocialProvider.KAKAO));
+            member.updateMbtiEntity(getMbtiEntity("ENFP"));
+            member.updateNickname("글쓴이");
+
+            QuestionResponse questionResponse1 = getQuestionResponse(1L, "글쓴이", "ISTJ", LocalDateTime.of(2023, 11, 2, 7, 23, 2));
+            QuestionResponse questionResponse2 = getQuestionResponse(2L, "글쓴이이", "ISTJ", LocalDateTime.of(2023, 11, 3, 16, 14, 2));
+            QuestionResponse questionResponse3 = getQuestionResponse(3L, "글글쓴이", "ISTJ", LocalDateTime.of(2023, 11, 4, 2, 23, 2));
+            List<QuestionResponse> questionResponses = List.of(questionResponse1, questionResponse2, questionResponse3);
+
+            PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+            given(questionService.searchWithCondition(any(Pageable.class), any(QuestionSearchParam.class)))
+                    .willReturn(PageableExecutionUtils.getPage(questionResponses, pageRequest, questionResponses::size));
+            //when
+            ResultActions resultActions = mockMvc.perform(get("/api/v1/question/search")
+                    .queryParam("page", String.valueOf(pageRequest.getPageNumber()))
+                    .queryParam("size", String.valueOf(pageRequest.getPageSize()))
+                    .queryParam("writer", questionSearchParam.writer())
+                    .queryParam("send_mbti", questionSearchParam.sendMbti())
+                    .queryParam("send_mbti", questionSearchParam.sendMbti())
+                    .queryParam("receive_mbti", questionSearchParam.receiveMbti())
+                    .queryParam("start_time", String.valueOf(questionSearchParam.startTime()))
+                    .queryParam("end_time", String.valueOf(questionSearchParam.endTime()))
                     .contentType(MediaType.APPLICATION_JSON));
 
             //then
@@ -171,83 +236,41 @@ class QuestionControllerTest extends RestDocsControllerTest {
                                             .summary("조회")
                                             .description("질문을 조건에 따라 검색 하는 API")
                                             .queryParameters(
-                                                    parameterWithName("page").optional()
-                                                            .type(SimpleType.NUMBER).defaultValue(0)
+                                                    parameterWithName("page").optional().type(SimpleType.NUMBER).defaultValue(0)
                                                             .description("페이지 번호"),
-                                                    parameterWithName("size").optional()
-                                                            .type(SimpleType.NUMBER)
-                                                            .defaultValue(10)
+                                                    parameterWithName("size").optional().type(SimpleType.NUMBER).defaultValue(10)
                                                             .description("페이지 크기"),
-                                                    parameterWithName("writer").optional()
-                                                            .type(SimpleType.STRING)
+                                                    parameterWithName("writer").optional().type(SimpleType.STRING)
                                                             .description("작성자"),
-                                                    parameterWithName("sendAttitude").optional()
-                                                            .type(SimpleType.STRING)
-                                                            .description("보낸이 E, I"),
-                                                    parameterWithName("sendPerception").optional()
-                                                            .type(SimpleType.STRING)
-                                                            .description("보낸이 N, S"),
-                                                    parameterWithName("sendDecision").optional()
-                                                            .type(SimpleType.STRING)
-                                                            .description("보낸이 T, F"),
-                                                    parameterWithName("sendLifestyle").optional()
-                                                            .type(SimpleType.STRING)
-                                                            .description("보낸이 P, J"),
-                                                    parameterWithName("receiveAttitude").optional()
-                                                            .type(SimpleType.STRING)
-                                                            .description("대상 E, I"),
-                                                    parameterWithName(
-                                                            "receivePerception").optional()
-                                                            .type(SimpleType.STRING)
-                                                            .description("대상 N, S"),
-                                                    parameterWithName("receiveDecision").optional()
-                                                            .type(SimpleType.STRING)
-                                                            .description("대상 T, F"),
-                                                    parameterWithName("receiveLifestyle").optional()
-                                                            .type(SimpleType.STRING)
-                                                            .description("대상 P, J"),
-                                                    parameterWithName("startTime").optional()
-                                                            .type(SimpleType.STRING)
+                                                    parameterWithName("send_mbti").optional().type(SimpleType.STRING)
+                                                            .description("작성자 MBTI"),
+                                                    parameterWithName("receive_mbti").optional().type(SimpleType.STRING)
+                                                            .description("작성자 MBTI"),
+                                                    parameterWithName("start_time").optional().type(SimpleType.STRING)
                                                             .description("검색 시작 날짜"),
-                                                    parameterWithName("endTime").optional()
-                                                            .type(SimpleType.STRING)
+                                                    parameterWithName("end_time").optional().type(SimpleType.STRING)
                                                             .description("검색 종료 날짜")
                                             )
                                             .responseFields(
                                                     fieldWithPath("data").type(JsonFieldType.OBJECT)
                                                             .description("응답 데이터"),
-                                                    fieldWithPath("data.content[].id").type(
-                                                                    JsonFieldType.NUMBER)
+                                                    fieldWithPath("data.content").type(JsonFieldType.ARRAY)
+                                                            .description("페이지 데이터"),
+                                                    fieldWithPath("data.content[].id").type(JsonFieldType.NUMBER)
                                                             .description("질문 번호"),
-                                                    fieldWithPath("data.content[].writer").type(
-                                                                    JsonFieldType.STRING)
+                                                    fieldWithPath("data.content[].writer").type(JsonFieldType.STRING)
                                                             .description("작성자"),
-                                                    fieldWithPath("data.content[].attitude").type(
-                                                                    JsonFieldType.STRING)
-                                                            .description("대상 E, I"),
-                                                    fieldWithPath("data.content[].perception").type(
-                                                                    JsonFieldType.STRING)
-                                                            .description("대상 N, S"),
-                                                    fieldWithPath("data.content[].decision").type(
-                                                                    JsonFieldType.STRING)
-                                                            .description("대상 T, F"),
-                                                    fieldWithPath("data.content[].lifestyle").type(
-                                                                    JsonFieldType.STRING)
-                                                            .description("대상 P, J"),
-                                                    fieldWithPath("data.content[].created_at").type(
-                                                                    JsonFieldType.STRING)
+                                                    fieldWithPath("data.content[].mbti").type(JsonFieldType.STRING)
+                                                            .description("질문 대상 MBTI"),
+                                                    fieldWithPath("data.content[].created_at").type(JsonFieldType.STRING)
                                                             .description("작성일"),
-                                                    fieldWithPath("data.totalElement").type(
-                                                                    JsonFieldType.NUMBER)
+                                                    fieldWithPath("data.totalElement").type(JsonFieldType.NUMBER)
                                                             .description("전체 질문 개수"),
-                                                    fieldWithPath("data.totalPage").type(
-                                                                    JsonFieldType.NUMBER)
+                                                    fieldWithPath("data.totalPage").type(JsonFieldType.NUMBER)
                                                             .description("전체 페이지 수"),
-                                                    fieldWithPath("message").type(
-                                                                    JsonFieldType.NULL)
+                                                    fieldWithPath("message").type(JsonFieldType.NULL)
                                                             .description("오류 메세지"),
-                                                    fieldWithPath("timestamp").type(
-                                                                    JsonFieldType.STRING)
+                                                    fieldWithPath("timestamp").type(JsonFieldType.STRING)
                                                             .description("응답 시간")
 
                                             )
@@ -269,15 +292,14 @@ class QuestionControllerTest extends RestDocsControllerTest {
             //given
             Long questionId = 1L;
             QuestionDetailResponse questionDetailResponse = QuestionDetailResponse.builder()
+                    .id(1L)
                     .writer("글쓴이")
-                    .attitude("E")
-                    .perception("N")
-                    .decision("T")
-                    .lifestyle("P")
+                    .mbti(getMbti("ENTP"))
                     .content("특정 상황에 대한 질문")
                     .createdAt(LocalDate.of(2023, 11, 1).atStartOfDay())
                     .build();
-            given(questionService.getDetail(questionId)).willReturn(questionDetailResponse);
+            given(questionService.getDetail(questionId))
+                    .willReturn(questionDetailResponse);
 
             //when
             ResultActions resultActions = mockMvc.perform(get("/api/v1/question/{id}", questionId)
@@ -300,24 +322,15 @@ class QuestionControllerTest extends RestDocsControllerTest {
                                     .responseFields(
                                             fieldWithPath("data").type(JsonFieldType.OBJECT)
                                                     .description("응답 데이터"),
+                                            fieldWithPath("data.id").type(JsonFieldType.NUMBER)
+                                                    .description("질문 번호"),
                                             fieldWithPath("data.writer").type(JsonFieldType.STRING)
-                                                    .description("응답 데이터"),
-                                            fieldWithPath("data.attitude").type(
-                                                            JsonFieldType.STRING)
-                                                    .description("대상 E, I"),
-                                            fieldWithPath("data.perception").type(
-                                                            JsonFieldType.STRING)
-                                                    .description("대상 N, S"),
-                                            fieldWithPath("data.decision").type(
-                                                            JsonFieldType.STRING)
-                                                    .description("대상 T, F"),
-                                            fieldWithPath("data.lifestyle").type(
-                                                            JsonFieldType.STRING)
-                                                    .description("대상 J, P"),
+                                                    .description("질문자"),
+                                            fieldWithPath("data.mbti").type(JsonFieldType.STRING)
+                                                    .description("MBTI"),
                                             fieldWithPath("data.content").type(JsonFieldType.STRING)
                                                     .description("내용"),
-                                            fieldWithPath("data.created_at").type(
-                                                            JsonFieldType.STRING)
+                                            fieldWithPath("data.created_at").type(JsonFieldType.STRING)
                                                     .description("작성일"),
                                             fieldWithPath("message").type(JsonFieldType.NULL)
                                                     .description("오류 메세지"),
@@ -329,6 +342,39 @@ class QuestionControllerTest extends RestDocsControllerTest {
                             )));
 
         }
+    }
+
+    private Oauth2Entity getOauth2Entity(String accountId, SocialProvider socialProvider) {
+        return Oauth2Entity.builder()
+                .accountId(accountId)
+                .socialProvider(socialProvider)
+                .build();
+    }
+
+    private Member getMember(Oauth2Entity oauth2Entity) {
+        return Member.builder()
+                .oauth2Entity(oauth2Entity)
+                .build();
+    }
+
+    private QuestionResponse getQuestionResponse(Long id, String writer, String mbti, LocalDateTime createdAt) {
+        return QuestionResponse.builder()
+                .id(id)
+                .writer(writer)
+                .mbti(MBTI.valueOf(mbti))
+                .createdAt(createdAt)
+                .build();
+    }
+
+    private MbtiEntity getMbtiEntity(String mbti) {
+        return MbtiEntity.builder()
+                .mbti(getMbti(mbti))
+                .build();
+    }
+
+    @NotNull
+    private static MBTI getMbti(String mbti) {
+        return MBTI.valueOf(mbti);
     }
 
 }

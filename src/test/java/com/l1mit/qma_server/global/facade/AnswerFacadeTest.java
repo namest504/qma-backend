@@ -14,6 +14,7 @@ import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
 import com.l1mit.qma_server.domain.member.service.MemberService;
 import com.l1mit.qma_server.domain.question.domain.Question;
 import com.l1mit.qma_server.domain.question.service.QuestionService;
+import com.l1mit.qma_server.global.common.domain.MBTI;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
 import com.l1mit.qma_server.global.exception.ErrorCode;
 import com.l1mit.qma_server.global.exception.QmaApiException;
@@ -43,18 +44,13 @@ class AnswerFacadeTest {
 
         @Test
         @DisplayName("성공한다.")
-        void success() throws Exception {
+        void success() {
             //given
             AnswerRequest answerRequest = AnswerRequest.builder()
                     .content("대답 내용")
                     .questionId(1L)
                     .build();
-            MbtiEntity mbtiEntity = MbtiEntity.builder()
-                    .attitude("E")
-                    .perception("N")
-                    .decision("T")
-                    .lifestyle("P")
-                    .build();
+            MbtiEntity mbtiEntity = getMbtiEntity("ENTP");
             Member member = Member.builder()
                     .oauth2Entity(
                             Oauth2Entity.builder()
@@ -90,7 +86,7 @@ class AnswerFacadeTest {
 
         @Test
         @DisplayName("질문의 대상 MBTI와 대답한 이의 MBTI가 일치하지 않아서 실패한다.")
-        void fail_NotMatchingMbti() throws Exception {
+        void fail_NotMatchingMbti() {
             //given
             AnswerRequest answerRequest = AnswerRequest.builder()
                     .content("대답 내용")
@@ -105,23 +101,21 @@ class AnswerFacadeTest {
                     )
                     .build();
             member.updateMbtiEntity(
-                    MbtiEntity.builder()
-                            .attitude("E")
-                            .perception("N")
-                            .decision("T")
-                            .lifestyle("P")
-                            .build()
+                    getMbtiEntity("ENTP")
             );
             Question question = Question.builder()
                     .member(member)
                     .content("질문 내용")
                     .receiveMbtiEntity(
-                            MbtiEntity.builder()
-                                    .attitude("I")
+                            getMbtiEntity("INFP")
+                            /*MbtiEntity.builder()
+                                    .mbti("INFP")
+                                    *//*.attitude("I")
                                     .perception("N")
                                     .decision("F")
-                                    .lifestyle("P")
-                                    .build())
+                                    .lifestyle("P")*//*
+                                    .build())*/
+                    )
                     .build();
             given(memberService.findById(anyLong()))
                     .willReturn(member);
@@ -136,6 +130,16 @@ class AnswerFacadeTest {
                     .isInstanceOf(QmaApiException.class)
                     .hasMessageContaining(ErrorCode.NOT_MATCHED_MBTI.getMessage());
         }
+    }
+
+    private static MbtiEntity getMbtiEntity(String mbti) {
+        return MbtiEntity.builder()
+                .mbti(MBTI.valueOf(mbti))
+                /*.attitude("E")
+                .perception("N")
+                .decision("T")
+                .lifestyle("P")*/
+                .build();
     }
 
 
