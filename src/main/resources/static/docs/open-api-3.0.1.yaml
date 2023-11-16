@@ -1,0 +1,505 @@
+openapi: 3.0.1
+info:
+  title: QMA API 문서
+  description: Spring REST Docs with SwaggerUI.
+  version: 0.0.1
+servers:
+- url: http://localhost:8080
+tags: []
+paths:
+  /api/v1/answer:
+    get:
+      tags:
+      - 대답
+      summary: 페이지 조회
+      description: 페이지 조회
+      operationId: answer-search
+      parameters:
+      - name: id
+        in: query
+        description: 질문 번호
+        required: true
+        schema:
+          type: number
+      - name: size
+        in: query
+        description: 페이지 크기
+        required: false
+        schema:
+          type: number
+      - name: page
+        in: query
+        description: 페이지 번호
+        required: false
+        schema:
+          type: number
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/AnswerResponse'
+              examples:
+                answer-search:
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "writer" : "글쓴이1",
+                          "content" : "대답 내용",
+                          "created_at" : "2023-11-01T13:14:00"
+                        }, {
+                          "writer" : "글쓴이2",
+                          "content" : "대답 내용",
+                          "created_at" : "2023-11-02T05:11:00"
+                        } ],
+                        "totalElement" : 2,
+                        "totalPage" : 1
+                      },
+                      "message" : null,
+                      "timestamp" : "2023-11-15T18:17:16"
+                    }
+    post:
+      tags:
+      - 대답
+      summary: 업로드
+      description: 업로드
+      operationId: answer-create
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/AnswerRequest'
+            examples:
+              answer-create:
+                value: |-
+                  {
+                    "content" : "대답 내용",
+                    "question_id" : 1
+                  }
+      responses:
+        "204":
+          description: "204"
+  /api/v1/question:
+    post:
+      tags:
+      - 질문
+      summary: 업로드
+      description: 질문을 업로드 하는 API
+      operationId: question-create
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+            examples:
+              question-create:
+                value: |-
+                  {
+                    "content" : "질문 내용",
+                    "mbti" : "ENTP"
+                  }
+      responses:
+        "204":
+          description: "204"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/api-v1-question-1299915313'
+              examples:
+                question-create:
+                  value: |-
+                    {
+                      "data" : null,
+                      "message" : null,
+                      "timestamp" : "2023-11-15T18:17:19"
+                    }
+  /api/v1/auth/my-info:
+    get:
+      tags:
+      - 유저
+      summary: 정보 불러오기
+      description: 정보 불러오기
+      operationId: member-my-info
+      parameters:
+      - name: Authorization
+        in: header
+        description: 인증 토큰
+        required: true
+        schema:
+          type: string
+        example: id_token
+      - name: Provider
+        in: header
+        description: 인증 소셜 서비스 이름
+        required: true
+        schema:
+          type: string
+        example: provider
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/MemberInfoResponse'
+              examples:
+                member-my-info:
+                  value: |-
+                    {
+                      "data" : {
+                        "provider" : "KAKAO",
+                        "mbti" : {
+                          "mbti" : "ISTJ"
+                        }
+                      },
+                      "message" : null,
+                      "timestamp" : "2023-11-15T18:17:18"
+                    }
+  /api/v1/question/search:
+    get:
+      tags:
+      - 질문
+      summary: 조회
+      description: 질문을 조건에 따라 검색 하는 API
+      operationId: question-search
+      parameters:
+      - name: page
+        in: query
+        description: 페이지 번호
+        required: false
+        schema:
+          type: number
+          default: 0
+      - name: size
+        in: query
+        description: 페이지 크기
+        required: false
+        schema:
+          type: number
+          default: 10
+      - name: writer
+        in: query
+        description: 작성자
+        required: false
+        schema:
+          type: string
+      - name: send_mbti
+        in: query
+        description: 작성자 MBTI
+        required: false
+        schema:
+          type: string
+      - name: receive_mbti
+        in: query
+        description: 작성자 MBTI
+        required: false
+        schema:
+          type: string
+      - name: start_time
+        in: query
+        description: 검색 시작 날짜
+        required: false
+        schema:
+          type: string
+      - name: end_time
+        in: query
+        description: 검색 종료 날짜
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/QuestionResponse'
+              examples:
+                question-search:
+                  value: |-
+                    {
+                      "data" : {
+                        "content" : [ {
+                          "id" : 1,
+                          "writer" : "글쓴이",
+                          "mbti" : "ISTJ",
+                          "created_at" : "2023-11-02T07:23:02"
+                        }, {
+                          "id" : 2,
+                          "writer" : "글쓴이이",
+                          "mbti" : "ISTJ",
+                          "created_at" : "2023-11-03T16:14:02"
+                        }, {
+                          "id" : 3,
+                          "writer" : "글글쓴이",
+                          "mbti" : "ISTJ",
+                          "created_at" : "2023-11-04T02:23:02"
+                        } ],
+                        "totalElement" : 3,
+                        "totalPage" : 1
+                      },
+                      "message" : null,
+                      "timestamp" : "2023-11-15T18:17:19"
+                    }
+  /api/v1/question/{id}:
+    get:
+      tags:
+      - 질문
+      summary: 조회
+      description: 질문 번호에 맞는 질문을 조회하는 API
+      operationId: question-search-detail
+      parameters:
+      - name: id
+        in: path
+        description: 질문 번호
+        required: true
+        schema:
+          type: number
+      responses:
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/QuestionDetailResponse'
+              examples:
+                question-search-detail:
+                  value: |-
+                    {
+                      "data" : {
+                        "id" : 1,
+                        "writer" : "글쓴이",
+                        "mbti" : "ENTP",
+                        "content" : "특정 상황에 대한 질문",
+                        "created_at" : "2023-11-01T00:00:00"
+                      },
+                      "message" : null,
+                      "timestamp" : "2023-11-15T18:17:19"
+                    }
+  /api/v1/auth/{PROVIDER}/sign-in:
+    post:
+      tags:
+      - 유저
+      summary: 로그인
+      description: 로그인
+      operationId: member-sign-in
+      parameters:
+      - name: PROVIDER
+        in: path
+        description: 소셜 서비스
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+            examples:
+              member-sign-in-fail:
+                value: |-
+                  {
+                    "code" : "authCode",
+                    "redirect_uri" : "http://redirect.uri"
+                  }
+              member-sign-in:
+                value: |-
+                  {
+                    "code" : "authCode",
+                    "redirect_uri" : "http://redirect.uri"
+                  }
+      responses:
+        "400":
+          description: "400"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/IdTokenResponse'
+              examples:
+                member-sign-in-fail:
+                  value: |-
+                    {
+                      "data" : null,
+                      "message" : "외부 API 요청 문제 발생",
+                      "timestamp" : "2023-11-15T18:17:18"
+                    }
+        "200":
+          description: "200"
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/IdTokenResponse'
+              examples:
+                member-sign-in:
+                  value: |-
+                    {
+                      "data" : {
+                        "id_token" : "IdToken"
+                      },
+                      "message" : null,
+                      "timestamp" : "2023-11-15T18:17:18"
+                    }
+components:
+  schemas:
+    AnswerResponse:
+      title: AnswerResponse
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            totalElement:
+              type: number
+              description: 전체 댓글 개수
+            totalPage:
+              type: number
+              description: 전체 댓글 페이지 수
+            content:
+              type: array
+              description: 페이지 데이터
+              items:
+                type: object
+                properties:
+                  created_at:
+                    type: string
+                    description: 댓글 작성일
+                  writer:
+                    type: string
+                    description: 댓글 쓴 사람
+                  content:
+                    type: string
+                    description: 댓글 내용
+          description: 응답 데이터
+        timestamp:
+          type: string
+          description: 응답 시간
+    QuestionRequest:
+      title: QuestionRequest
+      type: object
+      properties:
+        mbti:
+          type: string
+          description: MBTI
+        content:
+          type: string
+          description: 질문 내용
+    MemberInfoResponse:
+      title: MemberInfoResponse
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            provider:
+              type: string
+              description: 가입한 소셜 서비스
+            mbti:
+              type: object
+              properties:
+                mbti:
+                  type: string
+                  description: mbti 값
+              description: 유저의 mbti
+          description: 응답 데이터
+        timestamp:
+          type: string
+          description: 타임 스탬프
+    QuestionResponse:
+      title: QuestionResponse
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            totalElement:
+              type: number
+              description: 전체 질문 개수
+            totalPage:
+              type: number
+              description: 전체 페이지 수
+            content:
+              type: array
+              description: 페이지 데이터
+              items:
+                type: object
+                properties:
+                  created_at:
+                    type: string
+                    description: 작성일
+                  mbti:
+                    type: string
+                    description: 질문 대상 MBTI
+                  writer:
+                    type: string
+                    description: 작성자
+                  id:
+                    type: number
+                    description: 질문 번호
+          description: 응답 데이터
+        timestamp:
+          type: string
+          description: 응답 시간
+    SignInRequest:
+      title: SignInRequest
+      type: object
+      properties:
+        code:
+          type: string
+          description: code
+        redirect_uri:
+          type: string
+          description: redirect_uri
+    QuestionDetailResponse:
+      title: QuestionDetailResponse
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            created_at:
+              type: string
+              description: 작성일
+            mbti:
+              type: string
+              description: MBTI
+            writer:
+              type: string
+              description: 질문자
+            id:
+              type: number
+              description: 질문 번호
+            content:
+              type: string
+              description: 내용
+          description: 응답 데이터
+        timestamp:
+          type: string
+          description: 응답 시간
+    IdTokenResponse:
+      title: IdTokenResponse
+      type: object
+      properties:
+        message:
+          type: string
+          description: 오류 메세지
+        timestamp:
+          type: string
+          description: 타임 스탬프
+    api-v1-question-1299915313:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: 응답 시간
+    AnswerRequest:
+      title: AnswerRequest
+      type: object
+      properties:
+        question_id:
+          type: number
+          description: 질문 번호
+        content:
+          type: string
+          description: 대답 내용
