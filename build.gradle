@@ -90,13 +90,30 @@ tasks.withType(GenerateSwaggerUI) {
 	copy {
 		from "build/resources/main/static/docs"
 		into "src/main/resources/static/docs/"
-
 	}
 }
 
 
-bootJar {
+/*bootJar {
 	dependsOn('openapi3')
+	delete file('src/main/resources/static/docs/')
+	doLast {
+		copy {
+			from "build/resources/main/static/docs"
+			into "src/main/resources/static/docs/"
+		}
+	}
+}*/
+
+build {
+	dependsOn('openapi3')
+	delete file('src/main/resources/static/docs/')
+	doLast {
+		copy {
+			from "build/resources/main/static/docs"
+			into "src/main/resources/static/docs/"
+		}
+	}
 }
 
 openapi3 {
