@@ -53,14 +53,14 @@ public class SecurityConfig {
 
     private Customizer<AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry> setAuthorizeHttpRequests() {
         return requests ->
-                requests.requestMatchers(Stream.of(PERMIT_PATTERNS)
-                                .map(AntPathRequestMatcher::antMatcher)
-                                .toArray(AntPathRequestMatcher[]::new))
-                        .permitAll()
+                requests.requestMatchers(new AntPathRequestMatcher( "/api/v1/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher( "/h2-console/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher( "/swagger-ui/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher( "/swagger-resources/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher( "/v3/api-docs/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher( "/docs/**")).permitAll()
 
-                        .requestMatchers(Stream.of(HAS_ANY_ROLE_PATTERNS)
-                                .map(AntPathRequestMatcher::antMatcher)
-                                .toArray(AntPathRequestMatcher[]::new))
+                        .requestMatchers(new AntPathRequestMatcher( "/api/v1/auth/my-info"))
                         .hasAnyRole("MEMBER", "ADMIN")
 
                         .requestMatchers(new AntPathRequestMatcher("/api/v1/question", POST.name()))
@@ -72,17 +72,4 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/**"))
                         .authenticated();
     }
-
-    private static final String[] PERMIT_PATTERNS = new String[]{
-            "/api/v1/**",
-            "/h2-console/**",
-            "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/v3/api-docs/**",
-            "/docs/**"
-    };
-
-    private static final String[] HAS_ANY_ROLE_PATTERNS = new String[]{
-            "/api/v1/auth/my-info",
-    };
 }
