@@ -11,12 +11,12 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public MemberCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
+    public MemberCustomRepositoryImpl(final JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
     @Override
-    public Optional<Member> findByOauth2AccountId(SocialProvider socialProvider, String accountId) {
+    public Optional<Member> findByOauth2AccountId(final SocialProvider socialProvider, final String accountId) {
         return Optional.ofNullable(
                 jpaQueryFactory.selectFrom(member)
                         .where(member.oauth2Entity.socialProvider.eq(socialProvider),
@@ -25,7 +25,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
     }
 
     @Override
-    public Optional<Member> findByAccountId(String accountId) {
+    public Optional<Member> findByAccountId(final String accountId) {
         return Optional.ofNullable(
                 jpaQueryFactory.selectFrom(member)
                         .where(member.oauth2Entity.accountId.eq(accountId))

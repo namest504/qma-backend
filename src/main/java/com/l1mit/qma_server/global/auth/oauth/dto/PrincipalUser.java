@@ -19,7 +19,8 @@ public class PrincipalUser implements UserDetails, OidcUser, OAuth2User {
     private final Collection<? extends GrantedAuthority> authorities;
 
     @Builder
-    public PrincipalUser(Member member) {
+    public PrincipalUser(final Member member) {
+
         Map<String, Object> attributes = new HashMap<>() {{
             put("id", member.getId());
         }};

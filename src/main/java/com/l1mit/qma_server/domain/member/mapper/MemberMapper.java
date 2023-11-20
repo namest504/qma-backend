@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MemberMapper {
 
-    public MemberInfoResponse entityToMemberInfoResponse(Member member) {
+    public MemberInfoResponse entityToMemberInfoResponse(final Member member) {
         return MemberInfoResponse.builder()
                 .provider(member.getOauth2Entity().getSocialProvider())
                 .mbtiEntity(member.getMbtiEntity())

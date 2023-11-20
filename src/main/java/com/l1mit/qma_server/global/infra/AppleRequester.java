@@ -28,12 +28,12 @@ public class AppleRequester implements OauthAPIRequester {
     @Value("${oauth2.apple.public-key-info}")
     private String APPLE_PUBLIC_KEY_INFO;
 
-    public AppleRequester(WebClient webclient) {
+    public AppleRequester(final WebClient webclient) {
         this.webclient = webclient;
     }
 
     @Override
-    public IdTokenResponse getOpenIdToken(String code, String redirectUri) {
+    public IdTokenResponse getOpenIdToken(final String code, final String redirectUri) {
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("grant_type", "authorization_code");
         data.add("client_id", APPLE_OAUTH_API_KEY);

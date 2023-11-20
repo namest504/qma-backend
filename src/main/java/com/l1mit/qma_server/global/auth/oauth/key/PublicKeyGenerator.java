@@ -16,15 +16,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class PublicKeyGenerator {
 
-    public PublicKey generatePublicKey(Map<String, String> tokenHeaders,
-            OidcPublicKeyResponse oidcPublicKeyResponse) {
-        OidcPublicKey publicKey = oidcPublicKeyResponse.getMatchedKey(tokenHeaders.get("kid"),
-                tokenHeaders.get("alg"));
+    public PublicKey generatePublicKey(final Map<String, String> tokenHeaders, OidcPublicKeyResponse oidcPublicKeyResponse) {
+        OidcPublicKey publicKey = oidcPublicKeyResponse.getMatchedKey(tokenHeaders.get("kid"), tokenHeaders.get("alg"));
 
         return getPublicKey(publicKey);
     }
 
-    private PublicKey getPublicKey(OidcPublicKey publicKey) {
+    private PublicKey getPublicKey(final OidcPublicKey publicKey) {
         try {
             byte[] nBytes = Base64.getUrlDecoder().decode(publicKey.n());
             byte[] eBytes = Base64.getUrlDecoder().decode(publicKey.e());
@@ -33,7 +31,9 @@ public class PublicKeyGenerator {
                     new BigInteger(1, eBytes));
 
             KeyFactory keyFactory = KeyFactory.getInstance(publicKey.kty());
+
             return keyFactory.generatePublic(publicKeySpec);
+
         } catch (JwtException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new QmaApiException(ErrorCode.FAILED_OIDC_PUBLIC_KEY);
         }

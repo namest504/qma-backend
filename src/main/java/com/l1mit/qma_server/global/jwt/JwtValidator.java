@@ -17,13 +17,13 @@ public class JwtValidator {
     private final SocialAuthServiceFactory socialAuthServiceFactory;
     private final MemberRepository memberRepository;
 
-    public JwtValidator(SocialAuthServiceFactory socialAuthServiceFactory,
-            MemberRepository memberRepository) {
+    public JwtValidator(final SocialAuthServiceFactory socialAuthServiceFactory, final MemberRepository memberRepository) {
         this.socialAuthServiceFactory = socialAuthServiceFactory;
         this.memberRepository = memberRepository;
     }
 
-    public Authentication getAuthentication(String idToken, SocialProvider socialProvider) {
+    public Authentication getAuthentication(final String idToken, final SocialProvider socialProvider) {
+
         String accountId = socialAuthServiceFactory.getAccountId(socialProvider, idToken);
         Member member = memberRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new QmaApiException(ErrorCode.UNAUTHORIZED));

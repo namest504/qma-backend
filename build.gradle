@@ -83,7 +83,7 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.withType(GenerateSwaggerUI) {
+tasks.withType(GenerateSwaggerUI).configureEach {
 	dependsOn 'openapi3'
 
 	delete file('src/main/resources/static/docs/')
@@ -96,7 +96,6 @@ tasks.withType(GenerateSwaggerUI) {
 
 bootJar {
 	dependsOn('openapi3')
-//	delete file('src/main/resources/static/docs/')
 	doLast {
 		copy {
 			from "build/resources/main/static/docs"
@@ -107,7 +106,6 @@ bootJar {
 
 build {
 	dependsOn('openapi3')
-//	delete file('src/main/resources/static/docs/')
 	doLast {
 		copy {
 			from "build/resources/main/static/docs"
@@ -117,7 +115,10 @@ build {
 }
 
 openapi3 {
-	server = "http://localhost:8080"
+	servers = [
+			{ url = "http://localhost:8080"},
+			{ url = "https://list-api.link"}
+	]
 	title = "QMA API 문서"
 	description = "Spring REST Docs with SwaggerUI."
 	version = "0.0.1"

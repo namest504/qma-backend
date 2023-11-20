@@ -15,20 +15,23 @@ public class KakaoAuthService implements SocialAuthService {
     private final JwtProvider jwtProvider;
     private final PublicKeyGenerator publicKeyGenerator;
 
-    public KakaoAuthService(KakaoRequester kakaoRequester, JwtProvider jwtProvider,
-            PublicKeyGenerator publicKeyGenerator) {
+    public KakaoAuthService(
+            final KakaoRequester kakaoRequester,
+            final JwtProvider jwtProvider,
+            final PublicKeyGenerator publicKeyGenerator) {
         this.kakaoRequester = kakaoRequester;
         this.jwtProvider = jwtProvider;
         this.publicKeyGenerator = publicKeyGenerator;
     }
 
     @Override
-    public IdTokenResponse getOpenIdToken(String code, String redirectUri) {
+    public IdTokenResponse getOpenIdToken(final String code, final String redirectUri) {
         return kakaoRequester.getOpenIdToken(code, redirectUri);
     }
 
     @Override
-    public String getAccountId(String idToken) {
+    public String getAccountId(final String idToken) {
+
         Map<String, String> headers = jwtProvider.parseHeaders(idToken);
         PublicKey publicKey = publicKeyGenerator.generatePublicKey(headers,
                 kakaoRequester.getPublicKeys());

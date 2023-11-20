@@ -23,7 +23,7 @@ public class Oauth2Entity {
     private String accountId;
 
     @Builder
-    public Oauth2Entity(SocialProvider socialProvider, String accountId) {
+    public Oauth2Entity(final SocialProvider socialProvider, final String accountId) {
         this.socialProvider = socialProvider;
         this.accountId = accountId;
     }

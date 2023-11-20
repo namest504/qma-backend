@@ -32,24 +32,24 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
-    public QuestionController(QuestionService questionService) {
+    public QuestionController(final QuestionService questionService) {
         this.questionService = questionService;
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<?>> insert(@MemberId Long memberId,
-            @RequestBody @Valid QuestionRequest questionRequest) {
+    public ResponseEntity<ApiResponse<?>> insert(@MemberId Long memberId, @RequestBody @Valid QuestionRequest questionRequest) {
+
         questionService.save(memberId, questionRequest);
+
         return ResponseEntity.status(NO_CONTENT)
                 .body(ApiResponse.createSuccess());
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<PageResponse<List<QuestionResponse>>>> search(
-            @PageableDefault Pageable pageable,
-            QuestionSearchParam questionSearchParam) {
-        final Page<QuestionResponse> questionResponses = questionService.searchWithCondition(
-                pageable, questionSearchParam);
+    public ResponseEntity<ApiResponse<PageResponse<List<QuestionResponse>>>> search(@PageableDefault Pageable pageable, QuestionSearchParam questionSearchParam) {
+
+        final Page<QuestionResponse> questionResponses = questionService.searchWithCondition(pageable, questionSearchParam);
+
         return ResponseEntity.status(OK)
                 .body(ApiResponse.createSuccessWithData(
                         PageResponse.create(
@@ -59,8 +59,8 @@ public class QuestionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<QuestionDetailResponse>> searchDetail(
-            @PathVariable("id") Long questionId) {
+    public ResponseEntity<ApiResponse<QuestionDetailResponse>> searchDetail(@PathVariable("id") Long questionId) {
+
         final QuestionDetailResponse questionDetailResponse = questionService.getDetail(questionId);
 
         return ResponseEntity.status(OK)

@@ -17,11 +17,11 @@ public class AnswerCustomRepositoryImpl implements AnswerCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public AnswerCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
+    public AnswerCustomRepositoryImpl(final JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
-    public Page<AnswerResponse> findPagedAnswerByQuestionId(Pageable pageable, Long questionId) {
+    public Page<AnswerResponse> findPagedAnswerByQuestionId(final Pageable pageable, final Long questionId) {
 
         BooleanBuilder builder = new BooleanBuilder();
         if (questionId != null) {

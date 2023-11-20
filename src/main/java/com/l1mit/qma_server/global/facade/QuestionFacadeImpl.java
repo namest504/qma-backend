@@ -13,13 +13,13 @@ public class QuestionFacadeImpl implements QuestionFacade {
     private final MemberService memberService;
     private final QuestionMapper questionMapper;
 
-    public QuestionFacadeImpl(MemberService memberService, QuestionMapper questionMapper) {
+    public QuestionFacadeImpl(final MemberService memberService, final QuestionMapper questionMapper) {
         this.memberService = memberService;
         this.questionMapper = questionMapper;
     }
 
     @Override
-    public Question create(QuestionRequest questionRequest, Long memberId) {
+    public Question create(final QuestionRequest questionRequest, final Long memberId) {
         Member member = memberService.findById(memberId);
         return questionMapper.questionRequestToEntity(questionRequest, member);
     }

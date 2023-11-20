@@ -18,26 +18,26 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
 
-    public MemberService(MemberRepository memberRepository, MemberMapper memberMapper) {
+    public MemberService(final MemberRepository memberRepository, final MemberMapper memberMapper) {
         this.memberRepository = memberRepository;
         this.memberMapper = memberMapper;
     }
 
-    public MemberInfoResponse findMemberInfoResponseById(Long id) {
+    public MemberInfoResponse findMemberInfoResponseById(final Long id) {
         return memberMapper.entityToMemberInfoResponse(findById(id));
     }
 
-    public Member findById(Long id) {
+    public Member findById(final Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
-    public Optional<Member> findOauth2Account(SocialProvider provider, String accountId) {
+    public Optional<Member> findOauth2Account(final SocialProvider provider, final String accountId) {
         return memberRepository.findByOauth2AccountId(provider, accountId);
     }
 
-    public Member save(Oauth2Entity oauth2Entity) {
+    public Member save(final Oauth2Entity oauth2Entity) {
         return memberRepository.save(new Member(oauth2Entity));
     }
 }

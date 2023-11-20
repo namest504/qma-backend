@@ -16,23 +16,22 @@ public class AuthService {
     private final SocialAuthServiceFactory socialAuthServiceFactory;
     private final MemberService memberService;
 
-    public AuthService(SocialAuthServiceFactory socialAuthServiceFactory,
-            MemberService memberService) {
+    public AuthService(
+            final SocialAuthServiceFactory socialAuthServiceFactory,
+            final MemberService memberService) {
         this.socialAuthServiceFactory = socialAuthServiceFactory;
         this.memberService = memberService;
     }
 
-    public IdTokenResponse signIn(String provider, SignInRequest request) {
+    public IdTokenResponse signIn(final String provider, final SignInRequest request) {
+
         SocialProvider socialProvider = getSocialProvider(provider);
-        SocialAuthService socialAuthService = socialAuthServiceFactory.getAuthService(
-                socialProvider);
 
-        IdTokenResponse idTokenResponse = socialAuthService.getOpenIdToken(request.code(),
-                request.redirectUri());
+        IdTokenResponse idTokenResponse = socialAuthServiceFactory.getSocialIdToken(socialProvider,request);
 
-        String accountId = socialAuthService.getAccountId(idTokenResponse.idToken());
+        String accountId = socialAuthServiceFactory.getAccountId(socialProvider, idTokenResponse.idToken());
 
-        Member oauth2Account = memberService.findOauth2Account(socialProvider, accountId)
+        memberService.findOauth2Account(socialProvider, accountId)
                 .orElseGet(() -> memberService.save(
                         Oauth2Entity.builder()
                                 .socialProvider(socialProvider)
@@ -42,7 +41,7 @@ public class AuthService {
         return idTokenResponse;
     }
 
-    private SocialProvider getSocialProvider(String provider) {
+    private SocialProvider getSocialProvider(final String provider) {
         return SocialProvider.valueOf(provider);
     }
 }

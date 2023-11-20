@@ -25,15 +25,13 @@ public class MemberController {
     private final MemberService memberService;
     private final AuthService authService;
 
-    public MemberController(MemberService memberService, AuthService authService) {
+    public MemberController(final MemberService memberService, final AuthService authService) {
         this.memberService = memberService;
         this.authService = authService;
     }
 
     @PostMapping("/{provider}/sign-in")
-    public ResponseEntity<ApiResponse<IdTokenResponse>> signIn(
-            @PathVariable("provider") String provider,
-            @RequestBody @Valid SignInRequest signInRequest) {
+    public ResponseEntity<ApiResponse<IdTokenResponse>> signIn(@PathVariable("provider") String provider, @RequestBody @Valid SignInRequest signInRequest) {
         IdTokenResponse idTokenResponse = authService.signIn(provider, signInRequest);
         return ResponseEntity.ok()
                 .body(ApiResponse.createSuccessWithData(idTokenResponse));

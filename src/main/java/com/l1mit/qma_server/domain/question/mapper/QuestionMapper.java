@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuestionMapper {
 
-    public Question questionRequestToEntity(QuestionRequest request, Member member) {
+    public Question questionRequestToEntity(final QuestionRequest request, final Member member) {
         return Question.builder()
                 .member(member)
                 .content(request.content())
