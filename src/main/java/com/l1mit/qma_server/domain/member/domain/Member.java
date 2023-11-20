@@ -56,21 +56,21 @@ public class Member {
     private MbtiEntity mbtiEntity;
 
     @OneToMany(mappedBy = "member")
-    private List<Question> questions;
+    private List<Question> questions = new ArrayList<>();
 
     @Builder
-    public Member(Oauth2Entity oauth2Entity) {
+    public Member(final Oauth2Entity oauth2Entity) {
         this.oauth2Entity = oauth2Entity;
         this.nickname = oauth2Entity.getAccountId();
         this.role = new ArrayList<>(List.of(Role.ROLE_MEMBER));
         this.auditEntity = new AuditEntity();
     }
 
-    public void updateMbtiEntity(MbtiEntity mbtiEntity) {
+    public void updateMbtiEntity(final MbtiEntity mbtiEntity) {
         this.mbtiEntity = mbtiEntity;
     }
 
-    public void updateNickname(String nickname) {
+    public void updateNickname(final String nickname) {
         this.nickname = nickname;
     }
 

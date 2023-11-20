@@ -19,8 +19,10 @@ public class AnswerFacadeImpl implements AnswerFacade {
     private final QuestionService questionService;
     private final AnswerMapper answerMapper;
 
-    public AnswerFacadeImpl(MemberService memberService, QuestionService questionService,
-            AnswerMapper answerMapper) {
+    public AnswerFacadeImpl(
+            final MemberService memberService,
+            final QuestionService questionService,
+            final AnswerMapper answerMapper) {
         this.memberService = memberService;
         this.questionService = questionService;
         this.answerMapper = answerMapper;
@@ -28,14 +30,16 @@ public class AnswerFacadeImpl implements AnswerFacade {
 
     @Override
     @Transactional
-    public Answer create(AnswerRequest request, Long memberId) {
+    public Answer create(final AnswerRequest request, final Long memberId) {
+
         Member findedMember = memberService.findById(memberId);
         Question findedQuestion = questionService.findById(request.questionId());
         validateMatchingMbti(findedQuestion, findedMember);
+
         return answerMapper.answerRequestToEntity(request, findedQuestion, findedMember);
     }
 
-    private void validateMatchingMbti(Question question, Member member) {
+    private void validateMatchingMbti(final Question question, final Member member) {
         if (!question.getReceiveMbtiEntity().equals(member.getMbtiEntity())) {
             throw new QmaApiException(ErrorCode.NOT_MATCHED_MBTI);
         }

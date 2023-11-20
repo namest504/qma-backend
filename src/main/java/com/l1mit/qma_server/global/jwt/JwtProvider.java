@@ -23,76 +23,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtProvider {
 
-    private final Key key;
     private final ObjectMapper objectMapper;
 
-    private final Long ACCESS_TOKEN_VALID_TIME = 1000 * 60L * 60L; // 60분
-    private final Long REFRESH_TOKEN_VALID_TIME = 1000 * 60 * 60 * 24 * 7L; // 1주
-
-    public JwtProvider(@Value("${jwt.secret}") String secretKey,
-            ObjectMapper objectMapper) {
+    public JwtProvider(final ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public JwtResponse createToken(Member member) {
-        Claims claims = getClaims(member);
-        String accessToken = getToken(member, claims, ACCESS_TOKEN_VALID_TIME);
-        String refreshToken = getToken(member, claims, REFRESH_TOKEN_VALID_TIME);
-
-        return JwtResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-    }
-
-    public Claims getClaims(Member member) {
-        Claims claims = Jwts.claims();
-        claims.put("id", member.getId().toString());
-        return claims;
-    }
-
-    public String getToken(Member member, Claims claims, Long validationTime) {
-        long now = new Date().getTime();
-
-        return Jwts.builder()
-                .setSubject(member.getId().toString())
-                .setClaims(claims)
-                .signWith(key, SignatureAlgorithm.HS512)
-                .setExpiration(new Date(now + validationTime))
-                .compact();
-    }
-
-    /*
-    *
-    *   인증 로직 JwtValidator로 이동 임시 주석처리
-        public Authentication getAuthentication(String accessToken) {
-            Claims claims = getTokenClaims(accessToken);
-            Member member = memberService.findById(Long.parseLong(claims.get("id", String.class)));
-            PrincipalUser principalUser = PrincipalUser.builder()
-                    .member(member)
-                    .build();
-
-            return new UsernamePasswordAuthenticationToken(principalUser, "",
-                    principalUser.getAuthorities());
-        }
-
-        public Authentication getAuthentication(String idToken, SocialProvider socialProvider) {
-            String accountId = socialAuthServiceFactory.getAccountId(socialProvider, idToken);
-            Claims claims = getTokenClaims(idToken, );
-            Member member = memberService.findById(Long.parseLong(claims.get("id", String.class)));
-            Member member = memberRepository.findByAccountId(accountId)
-                    .orElseThrow(() -> new QmaApiException(ErrorCode.UNAUTHORIZED));
-            PrincipalUser principalUser = PrincipalUser.builder()
-                    .member(member)
-                    .build();
-
-            return new UsernamePasswordAuthenticationToken(principalUser, "",
-                    principalUser.getAuthorities());
-        }
-    */
-    public Map<String, String> parseHeaders(String token) {
+    public Map<String, String> parseHeaders(final String token) {
         try {
             String header = token.split("\\.")[0];
             return objectMapper.readValue(decodeHeader(header), Map.class);
@@ -101,19 +38,11 @@ public class JwtProvider {
         }
     }
 
-    public String decodeHeader(String token) {
+    public String decodeHeader(final String token) {
         return new String(Base64.getDecoder().decode(token), StandardCharsets.UTF_8);
     }
 
-    private Claims getTokenClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    public Claims getTokenClaims(String token, PublicKey publicKey) {
+    public Claims getTokenClaims(final String token, final PublicKey publicKey) {
         return Jwts.parserBuilder()
                 .setSigningKey(publicKey)
                 .build()

@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -40,7 +41,7 @@ public class Question {
     private String content;
 
     @OneToMany(mappedBy = "question")
-    private List<Answer> answers;
+    private List<Answer> answers = new ArrayList<>();
 
     @Embedded
     private MbtiEntity receiveMbtiEntity;

@@ -33,12 +33,12 @@ public class GoogleRequester implements OauthAPIRequester {
     @Value("${oauth2.google.public-key-info}")
     private String GOOGLE_PUBLIC_KEY_INFO;
 
-    public GoogleRequester(WebClient webclient) {
+    public GoogleRequester(final WebClient webclient) {
         this.webclient = webclient;
     }
 
     @Override
-    public IdTokenResponse getOpenIdToken(String code, String redirectUri) {
+    public IdTokenResponse getOpenIdToken(final String code, final String redirectUri) {
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("grant_type", "authorization_code");
         data.add("client_id", GOOGLE_OAUTH_API_KEY);

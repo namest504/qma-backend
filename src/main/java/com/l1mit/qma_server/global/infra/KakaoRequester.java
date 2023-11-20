@@ -30,12 +30,12 @@ public class KakaoRequester implements OauthAPIRequester {
     @Value("${oauth2.kakao.public-key-info}")
     private String KAKAO_PUBLIC_KEY_INFO;
 
-    public KakaoRequester(WebClient webclient) {
+    public KakaoRequester(final WebClient webclient) {
         this.webclient = webclient;
     }
 
     @Override
-    public IdTokenResponse getOpenIdToken(String code, String redirectUri) {
+    public IdTokenResponse getOpenIdToken(final String code, final String redirectUri) {
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("grant_type", "authorization_code");
         data.add("client_id", KAKAO_OAUTH_API_KEY);

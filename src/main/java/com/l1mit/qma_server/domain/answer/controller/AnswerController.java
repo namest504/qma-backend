@@ -30,24 +30,24 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
-    public AnswerController(AnswerService answerService) {
+    public AnswerController(final AnswerService answerService) {
         this.answerService = answerService;
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<?>> create(@RequestBody @Valid AnswerRequest answerRequest,
-            @MemberId Long memberId) {
+    public ResponseEntity<ApiResponse<?>> create(@RequestBody @Valid AnswerRequest answerRequest, @MemberId Long memberId) {
+
         answerService.create(answerRequest, memberId);
+
         return ResponseEntity.status(NO_CONTENT)
                 .build();
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<List<AnswerResponse>>>> getPagedAnswers(
-            @PageableDefault Pageable pageable,
-            @RequestParam("id") Long questionId) {
-        Page<AnswerResponse> responses = answerService.findPagedAnswerByQuestionId(
-                pageable, questionId);
+    public ResponseEntity<ApiResponse<PageResponse<List<AnswerResponse>>>> getPagedAnswers(@PageableDefault Pageable pageable, @RequestParam("id") Long questionId) {
+
+        Page<AnswerResponse> responses = answerService.findPagedAnswerByQuestionId(pageable, questionId);
+
         return ResponseEntity.status(OK)
                 .body(ApiResponse.createSuccessWithData(
                         PageResponse.create(

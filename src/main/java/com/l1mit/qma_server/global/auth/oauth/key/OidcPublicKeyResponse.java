@@ -8,7 +8,7 @@ public record OidcPublicKeyResponse(
         List<OidcPublicKey> keys
 ) {
 
-    public OidcPublicKey getMatchedKey(String kid, String alg) {
+    public OidcPublicKey getMatchedKey(final String kid, final String alg) {
         return keys.stream()
                 .filter(key -> key.kid().equals(kid) && key.alg().equals(alg))
                 .findAny()

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AnswerMapper {
 
-    public Answer answerRequestToEntity(AnswerRequest answerRequest,
+    public Answer answerRequestToEntity(final AnswerRequest answerRequest,
             Question question,
             Member member) {
 
