@@ -4,6 +4,7 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -165,5 +166,46 @@ class AnswerControllerTest extends RestDocsControllerTest {
                     ));
         }
 
+    }
+
+    @Nested
+    @DisplayName("questionRemove 메소드는")
+    class questionRemove{
+        @Test
+        @DisplayName("성공한다.")
+        void success() throws Exception {
+            //given
+            Long answerId = 1L;
+            //when
+            ResultActions resultActions = mockMvc.perform(delete("/api/v1/answer/{id}", answerId)
+                    .contentType(MediaType.APPLICATION_JSON));
+
+            //then
+            resultActions
+                    .andExpect(status().isNoContent())
+                    .andDo(document("answer-delete",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    resource(ResourceSnippetParameters.builder()
+                                            .tag("대답")
+                                            .summary("삭제")
+                                            .description("대답을 작성한 본인이 대답을 삭제하는 API")
+                                            .pathParameters(
+                                                    parameterWithName("id").type(SimpleType.NUMBER)
+                                                            .description("대답 번호")
+                                            )
+                                            .responseFields(
+                                                    fieldWithPath("data").type(JsonFieldType.NULL)
+                                                            .description("응답 데이터"),
+                                                    fieldWithPath("message").type(JsonFieldType.NULL)
+                                                            .description("오류 메세지"),
+                                                    fieldWithPath("timestamp").type(JsonFieldType.STRING)
+                                                            .description("응답 시간")
+                                            )
+                                            .build()
+                                    )
+                            )
+                    );
+        }
     }
 }

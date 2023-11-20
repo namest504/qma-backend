@@ -5,6 +5,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithNam
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
@@ -229,9 +230,9 @@ class QuestionControllerTest extends RestDocsControllerTest {
             resultActions
                     .andExpect(status().isOk())
                     .andDo(document("question-search",
-                            preprocessRequest(prettyPrint()),
-                            preprocessResponse(prettyPrint()),
-                            resource(ResourceSnippetParameters.builder()
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    resource(ResourceSnippetParameters.builder()
                                             .tag("질문")
                                             .summary("조회")
                                             .description("질문을 조건에 따라 검색 하는 API")
@@ -341,6 +342,49 @@ class QuestionControllerTest extends RestDocsControllerTest {
                                     .build()
                             )));
 
+        }
+    }
+
+    @Nested
+    @DisplayName("questionRemove 메소드는")
+    class questionRemove {
+
+        @Test
+        @DisplayName("성공한다.")
+        void success() throws Exception {
+            //given
+            Long questionId = 1L;
+
+            //when
+            ResultActions resultActions = mockMvc.perform(delete("/api/v1/question/{id}", questionId)
+                    .contentType(MediaType.APPLICATION_JSON));
+
+            //then
+            resultActions
+                    .andExpect(status().isNoContent())
+                    .andDo(document("question-delete",
+                                    preprocessRequest(prettyPrint()),
+                                    preprocessResponse(prettyPrint()),
+                                    resource(ResourceSnippetParameters.builder()
+                                            .tag("질문")
+                                            .summary("삭제")
+                                            .description("질문을 작성한 본인이 질문을 삭제하는 API")
+                                            .pathParameters(
+                                                    parameterWithName("id").type(SimpleType.NUMBER)
+                                                            .description("질문 번호")
+                                            )
+                                            .responseFields(
+                                                    fieldWithPath("data").type(JsonFieldType.NULL)
+                                                            .description("응답 데이터"),
+                                                    fieldWithPath("message").type(JsonFieldType.NULL)
+                                                            .description("오류 메세지"),
+                                                    fieldWithPath("timestamp").type(JsonFieldType.STRING)
+                                                            .description("응답 시간")
+                                            )
+                                            .build()
+                                    )
+                            )
+                    );
         }
     }
 
