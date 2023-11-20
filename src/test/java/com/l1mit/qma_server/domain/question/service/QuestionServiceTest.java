@@ -2,7 +2,11 @@ package com.l1mit.qma_server.domain.question.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import com.l1mit.qma_server.domain.member.domain.Member;
 import com.l1mit.qma_server.domain.member.domain.Oauth2Entity;
@@ -21,6 +25,7 @@ import com.l1mit.qma_server.global.facade.QuestionFacade;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -31,6 +36,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionServiceTest {
@@ -200,6 +206,69 @@ class QuestionServiceTest {
                     questionService.findById(questionId))
                     .isInstanceOf(QmaApiException.class)
                     .hasMessageContaining(ErrorCode.NOT_FOUND.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteById 메소드는")
+    class deleteById {
+
+        @Test
+        @DisplayName("성공한다.")
+        void success() {
+            //given
+            Member member = getMember(getOauth2Entity("123", SocialProvider.KAKAO));
+            Question question = getQuestion(
+                    member,
+                    getMbtiEntity("ENTP"),
+                    "질문 내용");
+
+            Long mockQuestionId = 1L;
+            Long mockMemberId = 1L;
+
+            ReflectionTestUtils.setField(member, "id", mockMemberId);
+            ReflectionTestUtils.setField(question, "id", mockQuestionId);
+
+
+            given(questionRepository.findById(mockQuestionId))
+                    .willReturn(Optional.of(question));
+
+            //when
+            questionService.deleteById(mockQuestionId, mockMemberId);
+
+            //then
+            verify(questionRepository, times(1)).deleteById(mockQuestionId);
+        }
+
+        @Test
+        @DisplayName("본인이 작성한 질문이 아니라면 예외처리를 한다.")
+        void fail_NotMatchingId() {
+            //given
+            Member writer = getMember(getOauth2Entity("123", SocialProvider.KAKAO));
+            Member member = getMember(getOauth2Entity("123", SocialProvider.KAKAO));
+            Question question = getQuestion(
+                    writer,
+                    getMbtiEntity("ENTP"),
+                    "질문 내용");
+
+            Long mockQuestionId = 1L;
+            Long mockWriterId = 1L;
+            Long mockMemberId = 2L;
+
+            ReflectionTestUtils.setField(writer, "id", mockWriterId);
+            ReflectionTestUtils.setField(member, "id", mockMemberId);
+            ReflectionTestUtils.setField(question, "id", mockQuestionId);
+
+            given(questionRepository.findById(mockQuestionId))
+                    .willReturn(Optional.of(question));
+
+            //when
+
+            //then
+            assertThatThrownBy(()->
+                    questionService.deleteById(mockQuestionId, mockMemberId))
+                    .isInstanceOf(QmaApiException.class)
+                    .hasMessageContaining(ErrorCode.NOT_WRITER.getMessage());
         }
     }
 

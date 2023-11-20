@@ -46,4 +46,17 @@ public class QuestionService {
         return questionRepository.findById(id)
                 .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
     }
+
+    public void deleteById(Long questionId, Long memberId) {
+        Question question = findById(questionId);
+        if (!validateQuestionWriter(memberId, question)) {
+            throw new QmaApiException(ErrorCode.NOT_WRITER);
+        }
+        questionRepository.deleteById(questionId);
+
+    }
+
+    private Boolean validateQuestionWriter(Long memberId, Question question) {
+        return question.getMember().getId().equals(memberId);
+    }
 }

@@ -4,6 +4,8 @@ import com.l1mit.qma_server.domain.answer.domain.Answer;
 import com.l1mit.qma_server.domain.answer.dto.request.AnswerRequest;
 import com.l1mit.qma_server.domain.answer.dto.response.AnswerResponse;
 import com.l1mit.qma_server.domain.answer.repository.AnswerRepository;
+import com.l1mit.qma_server.global.exception.ErrorCode;
+import com.l1mit.qma_server.global.exception.QmaApiException;
 import com.l1mit.qma_server.global.facade.AnswerFacade;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,5 +31,23 @@ public class AnswerService {
 
     public Page<AnswerResponse> findPagedAnswerByQuestionId(Pageable pageable, Long questionId) {
         return answerRepository.findPagedAnswerByQuestionId(pageable, questionId);
+    }
+
+    @Transactional(readOnly = true)
+    public Answer getAnswerById(Long id) {
+        return answerRepository.findById(id)
+                .orElseThrow(() -> new QmaApiException(ErrorCode.NOT_FOUND));
+    }
+
+    public void deleteById(Long answerId, Long memberId) {
+        Answer answer = getAnswerById(answerId);
+        if (!validateAnswerRespondent(memberId, answer)) {
+            throw new QmaApiException(ErrorCode.NOT_RESPONDENT);
+        }
+        answerRepository.deleteById(answerId);
+    }
+
+    private Boolean validateAnswerRespondent(Long memberId, Answer answer) {
+        return answer.getMember().getId().equals(memberId);
     }
 }

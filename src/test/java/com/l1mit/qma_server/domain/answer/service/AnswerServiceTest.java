@@ -1,6 +1,8 @@
 package com.l1mit.qma_server.domain.answer.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,9 +17,12 @@ import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
 import com.l1mit.qma_server.domain.question.domain.Question;
 import com.l1mit.qma_server.global.common.domain.MBTI;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
+import com.l1mit.qma_server.global.exception.ErrorCode;
+import com.l1mit.qma_server.global.exception.QmaApiException;
 import com.l1mit.qma_server.global.facade.AnswerFacade;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -28,6 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AnswerServiceTest {
@@ -110,6 +116,82 @@ class AnswerServiceTest {
             assertThat(result.getContent().size()).isEqualTo(answerResponses.size());
             assertThat(result.getTotalPages()).isEqualTo(1);
             assertThat(result.getNumberOfElements()).isEqualTo(answerResponses.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("deleteById 메소드는")
+    class deleteById {
+
+        @Test
+        @DisplayName("성공한다.")
+        void success() {
+            //given
+            Member member = getMember(getOauth2Entity("123", SocialProvider.KAKAO));
+            Member respondent = getMember(getOauth2Entity("123", SocialProvider.KAKAO));
+            Question question = getQuestion(
+                    member,
+                    getMbtiEntity("ENTP"),
+                    "질문 내용");
+            Answer answer = getAnswer(
+                    respondent,
+                    question
+                    );
+
+            Long mockAnswerId = 1L;
+            Long mockRespondentId = 1L;
+
+            ReflectionTestUtils.setField(respondent, "id", mockRespondentId);
+            ReflectionTestUtils.setField(answer, "id", mockAnswerId);
+
+
+            given(answerRepository.findById(mockAnswerId))
+                    .willReturn(Optional.of(answer));
+
+            //when
+            answerService.deleteById(mockAnswerId, mockRespondentId);
+
+            //then
+            verify(answerRepository, times(1)).deleteById(mockAnswerId);
+        }
+
+        @Test
+        @DisplayName("본인이 작성한 대답이 아니라면 예외처리를 한다.")
+        void fail_NotMatchingId() {
+            //given
+            Member writer = getMember(getOauth2Entity("123", SocialProvider.KAKAO));
+            Member respondent = getMember(getOauth2Entity("132", SocialProvider.KAKAO));
+
+            respondent.updateMbtiEntity(getMbtiEntity("ENTP"));
+
+            Question question = getQuestion(
+                    writer,
+                    getMbtiEntity("ENTP"),
+                    "질문 내용");
+
+            Answer answer = getAnswer(
+                    writer,
+                    question
+            );
+
+            Long mockAnswerId = 1L;
+            Long mockWriterId = 1L;
+            Long mockRespondentId = 2L;
+
+            ReflectionTestUtils.setField(answer, "id", mockAnswerId);
+            ReflectionTestUtils.setField(respondent, "id", mockRespondentId);
+            ReflectionTestUtils.setField(writer, "id", mockWriterId);
+
+            given(answerRepository.findById(mockAnswerId))
+                    .willReturn(Optional.of(answer));
+
+            //when
+
+            //then
+            assertThatThrownBy(()->
+                    answerService.deleteById(mockAnswerId, mockRespondentId))
+                    .isInstanceOf(QmaApiException.class)
+                    .hasMessageContaining(ErrorCode.NOT_RESPONDENT.getMessage());
         }
     }
 
