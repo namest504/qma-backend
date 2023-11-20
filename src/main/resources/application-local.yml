@@ -37,8 +37,6 @@ oauth2:
 redis:
   host: localhost
   port: 6379
-jwt:
-  secret: ${JWT_SECRET}
 
 springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
