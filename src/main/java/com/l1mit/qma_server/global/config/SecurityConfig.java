@@ -42,8 +42,8 @@ public class SecurityConfig {
                         setAuthorizeHttpRequests())
                 .headers(
                         headers -> headers.frameOptions(FrameOptionsConfig::disable))
-                .sessionManagement(
-                        config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .sessionManagement(
+//                        config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(
                         e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(
@@ -59,6 +59,7 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher( "/swagger-resources/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher( "/v3/api-docs/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher( "/docs/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher( "/ws/chat/**")).permitAll()
 
                         .requestMatchers(new AntPathRequestMatcher( "/api/v1/auth/my-info"))
                         .hasAnyRole("MEMBER", "ADMIN")
