@@ -1,9 +1,11 @@
 package com.l1mit.qma_server.domain.member.domain;
 
+import com.l1mit.qma_server.domain.chat.participant.domain.ChatParticipant;
 import com.l1mit.qma_server.domain.member.domain.enums.Role;
 import com.l1mit.qma_server.domain.question.domain.Question;
 import com.l1mit.qma_server.global.common.domain.AuditEntity;
 import com.l1mit.qma_server.global.common.domain.MbtiEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -58,6 +60,9 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Question> questions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    private List<ChatParticipant> chatParticipants = new ArrayList<>();
+
     @Builder
     public Member(final Oauth2Entity oauth2Entity) {
         this.oauth2Entity = oauth2Entity;
@@ -79,5 +84,9 @@ public class Member {
                 .map(Role::name)
                 .map(SimpleGrantedAuthority::new)
                 .toList();
+    }
+
+    public void addChatRoomMember(ChatParticipant chatParticipant) {
+        this.chatParticipants.add(chatParticipant);
     }
 }
