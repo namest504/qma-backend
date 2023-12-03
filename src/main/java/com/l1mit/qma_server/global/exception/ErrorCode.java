@@ -21,6 +21,7 @@ public enum ErrorCode {
     NOT_MATCHED_MBTI(HttpStatus.BAD_REQUEST, "대상 MBTI와 일치하지 않습니다."),
     NOT_WRITER(HttpStatus.BAD_REQUEST, "해당 질문의 질문자가 아닙니다."),
     NOT_RESPONDENT(HttpStatus.BAD_REQUEST, "해당 대답의 대답자가 아닙니다."),
+    ALREADY_MEMBER_IN_ROOM(HttpStatus.BAD_REQUEST, "이미 방에 접속되어있는 유저입니다.")
     ;
 
     private final HttpStatus status;
