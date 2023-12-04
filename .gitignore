@@ -7,3 +7,4 @@
 /src/main/resources/static/docs/**.yaml
 /.jpb/
 /.run/
+/log/

@@ -1,7 +1,7 @@
 package com.l1mit.qma_server.global.config;
 
 import com.l1mit.qma_server.global.exception.StompErrorHandler;
-import com.l1mit.qma_server.global.common.intercepter.StompInterceptor;
+import com.l1mit.qma_server.global.common.interceptor.StompInterceptor;
 import com.l1mit.qma_server.global.jwt.JwtValidator;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
