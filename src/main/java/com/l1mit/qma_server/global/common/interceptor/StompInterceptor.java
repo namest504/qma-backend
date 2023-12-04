@@ -1,30 +1,18 @@
-package com.l1mit.qma_server.global.common.intercepter;
+package com.l1mit.qma_server.global.common.interceptor;
 
 import static com.l1mit.qma_server.global.constants.MessageConstants.SESSION_AUTHENTICATION_ERROR;
 import static com.l1mit.qma_server.global.constants.MessageConstants.SESSION_ROOM_ID_NOT_EXISTS;
 
 import com.l1mit.qma_server.domain.member.domain.enums.SocialProvider;
-import com.l1mit.qma_server.global.constants.MessageConstants;
-import com.l1mit.qma_server.global.exception.ErrorCode;
-import com.l1mit.qma_server.global.exception.QmaApiException;
 import com.l1mit.qma_server.global.jwt.JwtValidator;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageDeliveryException;
-import org.springframework.messaging.simp.stomp.StompCommand;
-import org.springframework.messaging.simp.stomp.StompConversionException;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Slf4j
 public class StompInterceptor implements ChannelInterceptor {
