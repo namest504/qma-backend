@@ -5,7 +5,7 @@ import lombok.Builder;
 
 public record ChatMessageResponse(
         Long userId,
-        Long messageId,
+        String messageId,
         String nickname,
         String messageContent,
         LocalDateTime createdAt
