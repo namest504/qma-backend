@@ -6,4 +6,6 @@ COPY ${JAR_FILE} app.jar
 
 EXPOSE 8080
 
+RUN mkdir -p /log
+
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=dev","/app.jar"]
