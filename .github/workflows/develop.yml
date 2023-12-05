@@ -46,9 +46,9 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            mkdir -p /${{ secrets.DOCKER_IMAGE_NAME }}/logs
+            mkdir -p /home/${{ secrets.EC2_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}/logs
             docker pull ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_IMAGE_NAME }}
             docker stop ${{ secrets.DOCKER_IMAGE_NAME }}
             docker wait ${{ secrets.DOCKER_IMAGE_NAME }}
-            docker run -d --rm -v /${{ secrets.DOCKER_IMAGE_NAME }}/logs:/log --name ${{ secrets.DOCKER_IMAGE_NAME }} -p 8080:8080 ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_IMAGE_NAME }}
+            docker run -d --rm -v /home/${{ secrets.EC2_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}/logs:/log --name ${{ secrets.DOCKER_IMAGE_NAME }} -p 8080:8080 ${{ secrets.DOCKER_ID }}/${{ secrets.DOCKER_IMAGE_NAME }}
             docker image prune -a -f
