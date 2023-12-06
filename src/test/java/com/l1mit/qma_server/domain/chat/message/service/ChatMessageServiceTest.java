@@ -66,7 +66,7 @@ class ChatMessageServiceTest {
                     .build();
             ChatMessageResponse chatMessageResponse = ChatMessageResponse.builder()
                     .messageContent("메세지 내용")
-                    .messageId(1L)
+                    .messageId("msgId1")
                     .nickname("닉네임")
                     .userId(1L)
                     .createdAt(LocalDateTime.now())

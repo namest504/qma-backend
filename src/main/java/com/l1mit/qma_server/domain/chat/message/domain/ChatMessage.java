@@ -14,12 +14,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @RedisHash(value = "chat_message")
@@ -27,20 +29,17 @@ import org.springframework.data.redis.core.RedisHash;
 public class ChatMessage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chat_message_id")
-    private Long id;
+    private String id;
 
-    @Column(name = "message", nullable = false)
-    private String message;
-
+    @Indexed
     private String roomId;
+
+    private String message;
 
     private Long memberId;
 
     private String nickName;
 
-    @Column(name = "created_at",updatable = false)
     private LocalDateTime createdAt;
 
     @Builder
@@ -49,6 +48,7 @@ public class ChatMessage {
             final String roomId,
             final Long memberId,
             final String nickName) {
+        this.id = UUID.randomUUID().toString();
         this.message = message;
         this.roomId = roomId;
         this.memberId = memberId;
