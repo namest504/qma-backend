@@ -38,7 +38,7 @@ public class MockSecurityFilter implements Filter {
 
     private static Member createMember() {
         Oauth2Entity oauth2Entity = Oauth2Entity.builder()
-                .accountId("su41kvy9q")
+                .accountId("1111")
                 .socialProvider(SocialProvider.GOOGLE)
                 .build();
         Member member = Member.builder()
